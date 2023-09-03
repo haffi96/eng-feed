@@ -1,0 +1,20 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1693698744690,
+      "tag": "0000_jittery_zodiak",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1693744688517,
+      "tag": "0001_lazy_gertrude_yorkes",
+      "breakpoints": true
+    }
+  ]
+}
