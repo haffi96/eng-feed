@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "generate-migration": "pnpm drizzle-kit generate:pg --config config.ts",
-    "migrate": "pnpm ts-node migrate.ts",
-    "db-push": "pnpm drizzle-kit push:pg --config config.ts",
-    "db-studio": "pnpm drizzle-kit studio --config config.ts --port 5000"
+    "generate-migration": "npx drizzle-kit generate:pg --config config.ts",
+    "migrate": "npx ts-node migrate.ts",
+    "db-push": "npx drizzle-kit push:pg --config config.ts",
+    "db-studio": "npx drizzle-kit studio --config config.ts --port 5000"
   },
   "keywords": [],
   "author": "",

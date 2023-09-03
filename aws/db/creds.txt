@@ -1,4 +1,0 @@
-aws rds
-
-username: postgres
-pass: B3@t1Ful$

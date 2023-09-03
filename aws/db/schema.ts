@@ -59,8 +59,4 @@ export const userPosts = pgTable('user_posts', {
     emailed: boolean('emailed').notNull().default(false),
     updatedAt: timestamp('updated_at'),
 
-}, (userPosts) => {
-    return {
-        userPostIndex: uniqueIndex('user_post_idx').on(userPosts.user_id, userPosts.post_id),
-    }
 });

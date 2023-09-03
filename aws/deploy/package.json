@@ -2,7 +2,7 @@
   "name": "deploy",
   "version": "0.1.0",
   "bin": {
-    "deploy": "ts-node bin/deploy.ts"
+    "deploy": "bin/deploy.js"
   },
   "scripts": {
     "build": "tsc",
