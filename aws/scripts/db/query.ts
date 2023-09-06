@@ -2,7 +2,14 @@ import { db } from './session'
 import { allBlogs, blogPosts, userBlogs, userPosts } from './schema'
 import { eq, and, desc, getOperators , sql} from 'drizzle-orm';
 
-const fetchNewPostsForUser = async (userId: number) => {
+
+export type newBlogEntry = typeof allBlogs.$inferInsert;
+
+export const createAllBlogsEntry = async (newBlogParams: newBlogEntry) => {
+    return await db.insert(allBlogs).values(newBlogParams);
+}
+
+export const fetchNewPostsForUser = async (userId: number) => {
     const sq = db.select().from(userBlogs).where(eq(userBlogs.user_id, userId)).as('sq');
 
     return await db.select().from(blogPosts)
@@ -10,15 +17,15 @@ const fetchNewPostsForUser = async (userId: number) => {
     .orderBy(desc(blogPosts.publishedData))
 }
 
-const fetchNewPosts = async () => {
+export const fetchNewPosts = async () => {
     return await db.select({blogId: blogPosts.blog_id, postUuid: blogPosts.post_uuid}).from(blogPosts)
 }
 
-const fetchUsersForBlog = async (blogId: number | null) => {
+export const fetchUsersForBlog = async (blogId: number | null) => {
     return await db.select({userId: userBlogs.user_id}).from(userBlogs).where(eq(userBlogs.blog_id, blogId!));
 }
 
-const fetchUsersToNotify = async () => {
+export const fetchUsersToNotify = async () => {
     const newPosts = await fetchNewPosts();
 
     const userIdsToNotify = new Map<number, string[]>();
@@ -46,13 +53,21 @@ const fetchUsersToNotify = async () => {
 };
 
 
-fetchUsersToNotify().then((users) => {
-    console.log(users);
-});
+// fetchUsersToNotify().then((users) => {
+//     console.log(users);
+// });
 
 // fetchNewPostsForUser(1).then((posts) => {
 //     console.log(posts);
 // });
 // fetchNewPostsForUser(2).then((posts) => {
 //     console.log(posts);
+// });
+
+
+// const link = 'https://blog.cloudflare.com/rss/';
+// const companyName = 'Cloudflare';
+// const rssVersion = '2.0';
+// createAllBlogsEntry({ link, companyName, rssVersion }).then((res) => {
+//     console.log(res);
 // });

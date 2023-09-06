@@ -15,6 +15,13 @@
       "when": 1693744688517,
       "tag": "0001_lazy_gertrude_yorkes",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1694029869347,
+      "tag": "0002_striped_night_thrasher",
+      "breakpoints": true
     }
   ]
 }

@@ -18,7 +18,8 @@ export const allBlogs = pgTable('all_blogs', {
     id: serial('id').primaryKey(),
     blog_uuid: uuid('blog_uuid').notNull().default(sql`uuid_generate_v4()`),
     link: varchar('link', { length: 256 }),
-    company: varchar('company', { length: 256 }),
+    companyName: varchar('company', { length: 256 }),
+    rssVersion: varchar('rss_version', { length: 256 }),
 }, (allBlogs) => {
     return {
         uuidIndex: uniqueIndex('uuid_idx').on(allBlogs.blog_uuid),
