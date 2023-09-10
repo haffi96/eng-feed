@@ -1,1 +1,0 @@
-https://tone-row.com/blog/drizzle-orm-quickstart-tutorial-first-impressions

@@ -1,0 +1,56 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import ThemeButton from "../../components/ThemeToggle";
+import BlogView from "../../components/BlogView.astro";
+import type { Post } from "../../types";
+
+export async function getStaticPaths({ paginate }: any) {
+  const API_URL = import.meta.env.API_URL as string;
+  const res = await fetch(`${API_URL}/posts?userId=1&offset=0&limit=50`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const postsData: Post[] = await res.json();
+
+  return paginate(postsData, { pageSize: 5 });
+}
+
+const { page } = Astro.props;
+---
+
+<Layout title="Welcome to Astro.">
+    <main>
+    <div class="text-end">
+      <ThemeButton client:only />
+    </div>
+    <div class="items-center text-center">
+      <div>
+        <h1 class="text-xl font-extrabold">Latest posts</h1>
+        <div class="flex flex-row space-x-1">
+        {page.url.prev &&
+            <a
+                href=`${page.url.prev}`
+                class="hover:bg-zinc-600 shadow-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100"
+            >
+                Prev
+            </a>
+        }
+        {page.url.next &&
+            <a
+                href=`${page.url.next}`
+                class="hover:bg-zinc-600 shadow-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100"
+            >
+                Next
+            </a>
+        }
+        </div>
+      </div>
+      {
+        page.data.map((p: any) => {
+          return <BlogView blog={p} />;
+        })
+      }
+    </div>
+  </main>
+</Layout>

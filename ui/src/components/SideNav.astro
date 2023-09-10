@@ -1,9 +1,33 @@
-<nav class="p-10 bg-zinc-400 w-1/6 text-center">
-  <div class="">
-    <ul class="text-white list-disc">
-      <details>
-        <summary>Subscriptions</summary>
-        <li><a href="/uber">Uber Engineering</a></li>
+---
+import type { Subscription } from "../types";
+import AllSubscriptionsList from "./allSubscriptions";
+
+const API_URL = import.meta.env.API_URL;
+
+const userId = 1;
+
+const res = await fetch(`${API_URL}/subscribed-blogs?userId=${userId}`, {
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+const subs: Subscription[] = await res.json();
+---
+
+<nav
+  class="p-10 bg-zinc-400 dark:bg-zinc-500 w-2/6 text-center overflow-hidden space-y-5"
+>
+  <a
+    href="/posts/1"
+    class="hover:bg-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100
+      text-center m-auto flex justify-center items-center"
+    >Home</a
+  >
+  <div>
+    <ul class="dark:text-black list-disc">
+      <details open class="cursor-pointer">
+        <summary class="text-xl text-zinc-800">Subscriptions</summary>
+        <AllSubscriptionsList client:load apiUrl={API_URL} subs={subs} />
       </details>
     </ul>
   </div>
