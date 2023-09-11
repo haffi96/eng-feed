@@ -17,7 +17,7 @@ export default function AllSubscriptionsList({ apiUrl, subs }: SubscribedBlogIte
 
 
     return (
-        <div class="flex flex-col space-y-2 p-2">
+        <div class="flex flex-col space-y-2 lg:p-2 text-sm md:text-lg">
             {
                 subscribedBlogs.map((sub) => {
                     return (
@@ -26,10 +26,12 @@ export default function AllSubscriptionsList({ apiUrl, subs }: SubscribedBlogIte
                             <a class="w-full" href={`${sub.blogLink}`}>
                                 {sub.companyName}
                             </a>
-                            <UnSubscribeButton
-                                sub={sub}
-                                removeSubAction={removeSubAction}
-                            />
+                            <div class="hidden md:block">
+                                <UnSubscribeButton
+                                    sub={sub}
+                                    removeSubAction={removeSubAction}
+                                />
+                            </div>
                         </div>
 
                     );
