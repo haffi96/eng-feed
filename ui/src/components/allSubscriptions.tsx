@@ -10,7 +10,6 @@ interface SubscribedBlogItemProps {
 export default function AllSubscriptionsList({ apiUrl, subs }: SubscribedBlogItemProps) {
     const [subscribedBlogs, setSubscribedBlogs] = useState<Subscription[]>(subs);
 
-
     const removeSubAction = (blogId: number) => {
         const newSubs = subscribedBlogs.filter((s) => s.blogId !== blogId);
         setSubscribedBlogs(newSubs);

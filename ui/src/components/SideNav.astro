@@ -12,6 +12,14 @@ const res = await fetch(`${API_URL}/subscribed-blogs?userId=${userId}`, {
   },
 });
 const subs: Subscription[] = await res.json();
+
+const comingSoonEntry = {
+  blogId: 1000,
+  blogLink: "/",
+  companyName: "More coming soon!",
+};
+
+subs.push(comingSoonEntry);
 ---
 
 <nav
