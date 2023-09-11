@@ -73,12 +73,23 @@ export class TestStack extends cdk.Stack {
     // Api Gateway setup
     const api = new ApiGateway(this)
 
-    // Create a Lambda function for posting messages to SQS
-    const postsLambda = new GenericLambda(this, 'Posts');
+    // Lambda function to be scheduled for fetching new posts and inserting to db
+    const fetchPostsLambda = new GenericLambda(this, 'FetchAndInsertPosts');
+    const fetchPostsRule = new events.Rule(this, 'PostsRule', {
+        schedule: events.Schedule.cron({ minute: '0', hour: '8' }), // Adjust the schedule as needed
+    });
+    fetchPostsRule.addTarget(new targets.LambdaFunction(fetchPostsLambda));
+
+    // Lambda function to notify users
+    const fetchUserToNotify = new GenericLambda(this, 'NotifyUsers');
+    const fetchUserToNotifyRule = new events.Rule(this, 'fetchUserToNotifyRule', {
+        schedule: events.Schedule.cron({ minute: '0', hour: '9' }), // Adjust the schedule as needed
+    });
+    fetchUserToNotifyRule.addTarget(new targets.LambdaFunction(fetchUserToNotify));
 
     // Grant Lambda permissions to read from the RDS instance and send messages to SQS
     // dbInstance.grantConnect(postsLambda);
-    queue.grantSendMessages(postsLambda);
+    queue.grantSendMessages(fetchUserToNotify);
 
     // Create a Lambda function for sending emails
     const sendEmailLambda = new GenericLambda(this, 'SendEmail');
@@ -86,21 +97,15 @@ export class TestStack extends cdk.Stack {
     // Subscribe the SNS Topic to Send Email Lambda
     snsTopic.addSubscription(new snsSubscriptions.LambdaSubscription(sendEmailLambda));
 
-    // Create an event rule to trigger the PostsLambda on a cron schedule (e.g., every morning)
-    const rule = new events.Rule(this, 'PostsRule', {
-        schedule: events.Schedule.cron({ minute: '0', hour: '8' }), // Adjust the schedule as needed
-    });
-
-    rule.addTarget(new targets.LambdaFunction(postsLambda));
-
     // API Lambdas
+    const postsLambda = new GenericLambda(this, 'Posts');
     const getSubscribedBlogsLambda = new GenericLambda(this, 'GetSubscribedBlogs');
 
     // API Routes
     api.addIntegration("GET", "/posts", postsLambda)
     api.addIntegration("GET", "/subscribed-blogs", getSubscribedBlogsLambda)
 
-    // Create an SQS event source for SendEmailLambda to process messages from the queue
+    // Create an SQS event source for NotifyUsers Lambda to process messages from the queue
     const eventSource = new lambdaEventSources.SqsEventSource(queue, { batchSize: 1 } );
     sendEmailLambda.addEventSource(eventSource);
   }

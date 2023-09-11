@@ -1,5 +1,7 @@
 import { parseString } from 'xml2js';
 import { createAllBlogsEntry, newBlogEntry, getBlogByCompanyName, newBlogPostEntry, createBlogPostEntry } from '../db/query';
+import { createHash } from 'crypto';
+import { log } from 'console';
 
 // <outline type="rss" text="8th Light" title="8th Light" xmlUrl="https://8thlight.com/blog/feed/atom.xml" htmlUrl="https://8thlight.com/blog/"/>
 //       <outline type="rss" text="Airbnb" title="Airbnb" xmlUrl="https://medium.com/feed/airbnb-engineering" htmlUrl="https://medium.com/airbnb-engineering"/>
@@ -142,7 +144,14 @@ companyBlogLinkMap.set('Slack', 'https://slack.engineering/feed');
 companyBlogLinkMap.set('Etsy', 'https://codeascraft.com/feed/');
 
 
-const fetchAndInsertBlogPosts = async (limit: number) => {
+function createChecksum(inputString: string, algorithm: string = 'sha256'): string {
+    const hash = createHash(algorithm);
+    hash.update(inputString);
+    return hash.digest('hex');
+  }
+
+
+export const fetchAndInsertBlogPosts = async (limit: number) => {
     const parsedItems = new Map<string, BlogPostEntry>();
 
     for (const companyName of companyBlogLinkMap.keys()) {
@@ -177,16 +186,23 @@ const fetchAndInsertBlogPosts = async (limit: number) => {
                 const link = item.link[0];
                 const publishedDate = item.pubDate[0];
 
+                if (!publishedDate) {
+                    continue;
+                }
+
                 const author = item['dc:creator']?.[0] || item.author?.[0];
 
                 const timestamp = new Date(publishedDate);
+
+                const titleHash = createChecksum(title);
 
                 await createBlogPostEntry({
                     title,
                     link,
                     publishedDate: timestamp,
                     author,
-                    blog_id: blogEntryRecord[0].id
+                    blog_id: blogEntryRecord[0].id,
+                    titleHash,
                 })
 
                 const parsedObject = {
@@ -214,7 +230,7 @@ const fetchAndInsertBlogPosts = async (limit: number) => {
   };
 
 
-const populateBlogEntries = async () => {
+export const populateBlogEntries = async () => {
     for (const companyName of companyBlogLinkMap.keys()) {
         const url = companyBlogLinkMap.get(companyName);
         fetch(url!)
@@ -248,9 +264,8 @@ const populateBlogEntries = async () => {
 }
 
 // populateBlogEntries();
-const run = async () => {
-    const data = await fetchAndInsertBlogPosts(5);
-    console.log(data);
-}
+// const run = async () => {
+//     const data = await fetchAndInsertBlogPosts(10);
+// }
 
-run();
+// run();

@@ -2,7 +2,7 @@ import type { Config } from "drizzle-kit";
 import { config as dotEndConfig } from "dotenv";
 
 dotEndConfig();
- 
+
 export default {
   schema: "./backend/db/schema.ts",
   out: "./backend/db/migrations",

@@ -37,7 +37,10 @@ export const getBlogByCompanyName = async (blogName: string): Promise<blogEntry[
 
 // BlogPosts table
 export const createBlogPostEntry = async (newBlogPostParams: newBlogPostEntry) => {
-    return await db.insert(blogPosts).values(newBlogPostParams);
+    return await db
+    .insert(blogPosts)
+    .values(newBlogPostParams)
+    .onConflictDoNothing({ target: [blogPosts.titleHash] });
 }
 
 export const fetchNewPosts = async () => {
@@ -102,6 +105,10 @@ export const fetchTodaysUsersToNotify = async () => {
     const userIdsToNotify = new Map<string, string[]>();
 
     // Collect all blog IDs for the new posts
+    if (newPosts.length === 0) {
+        return userIdsToNotify;
+    }
+
     const blogIds = newPosts.map((post) => post.blogId);
 
     // Fetch all users for the collected blog IDs in a single query
@@ -135,13 +142,13 @@ export const fetchTodaysUsersToNotify = async () => {
 };
 
 
-// fetchTodaysUsersToNotify().then((users) => {
-//     console.log(users);
-// });
-
-fetchAllPostsForUser({ userId: 1, offset: 0, limit: 10 }).then((posts) => {
-    console.log(posts);
+fetchTodaysUsersToNotify().then((users) => {
+    console.log(users);
 });
+
+// fetchAllPostsForUser({ userId: 1, offset: 0, limit: 10 }).then((posts) => {
+//     console.log(posts);
+// });
 
 // fetchUserSubscribedBlogs(1).then((res) => {
 //     console.log(res);
