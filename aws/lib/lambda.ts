@@ -15,7 +15,7 @@ export class GenericLambda extends NodejsFunction {
             runtime: Runtime.NODEJS_18_X,
             entry: path.join(__dirname,`../backend/lambda/${fileName}.ts`),
             logRetention: RetentionDays.ONE_DAY,
-            timeout: Duration.seconds(10),
+            timeout: Duration.seconds(30),
             environment: {
                 TEST_SECRET: "foo",
                 DATABASE_URL: process.env.DATABASE_URL as string,

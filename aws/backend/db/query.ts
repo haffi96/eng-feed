@@ -142,9 +142,9 @@ export const fetchTodaysUsersToNotify = async () => {
 };
 
 
-fetchTodaysUsersToNotify().then((users) => {
-    console.log(users);
-});
+// fetchTodaysUsersToNotify().then((users) => {
+//     console.log(users);
+// });
 
 // fetchAllPostsForUser({ userId: 1, offset: 0, limit: 10 }).then((posts) => {
 //     console.log(posts);

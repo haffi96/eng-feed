@@ -1,7 +1,6 @@
 import { parseString } from 'xml2js';
 import { createAllBlogsEntry, newBlogEntry, getBlogByCompanyName, newBlogPostEntry, createBlogPostEntry } from '../db/query';
 import { createHash } from 'crypto';
-import { log } from 'console';
 
 // <outline type="rss" text="8th Light" title="8th Light" xmlUrl="https://8thlight.com/blog/feed/atom.xml" htmlUrl="https://8thlight.com/blog/"/>
 //       <outline type="rss" text="Airbnb" title="Airbnb" xmlUrl="https://medium.com/feed/airbnb-engineering" htmlUrl="https://medium.com/airbnb-engineering"/>
@@ -265,7 +264,9 @@ export const populateBlogEntries = async () => {
 
 // populateBlogEntries();
 // const run = async () => {
-//     const data = await fetchAndInsertBlogPosts(10);
+//     const data = await fetchAndInsertBlogPosts(5);
+//     console.log(data);
+
 // }
 
 // run();
