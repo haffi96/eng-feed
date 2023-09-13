@@ -1,4 +1,4 @@
-import{ fetchAndInsertBlogPosts } from '../rss'
+import{ fetchAndInsertBlogPosts } from "../rss"
 
 export const handler = async () => {
     try {
@@ -6,14 +6,14 @@ export const handler = async () => {
         return {
             statusCode: 200,
             body: "success",
-        };
+        }
     } catch (err) {
-        console.log(err);
+        console.log(err)
         return {
             statusCode: 500,
             body: JSON.stringify({
-                message: 'some error happened',
+                message: "some error happened",
             }),
-        };
+        }
     }
-};
+}

@@ -1,6 +1,6 @@
-import { parseString } from 'xml2js';
-import { createAllBlogsEntry, newBlogEntry, getBlogByCompanyName, newBlogPostEntry, createBlogPostEntry } from '../db/query';
-import { createHash } from 'crypto';
+import { parseString } from "xml2js"
+import { createAllBlogsEntry, getBlogByCompanyName, createBlogPostEntry } from "../db/query"
+import { createHash } from "crypto"
 
 // <outline type="rss" text="8th Light" title="8th Light" xmlUrl="https://8thlight.com/blog/feed/atom.xml" htmlUrl="https://8thlight.com/blog/"/>
 //       <outline type="rss" text="Airbnb" title="Airbnb" xmlUrl="https://medium.com/feed/airbnb-engineering" htmlUrl="https://medium.com/airbnb-engineering"/>
@@ -118,7 +118,7 @@ interface BlogPostEntry {
     author?: string;
 }
 
-const companyBlogLinkMap = new Map<string, string>();
+const companyBlogLinkMap = new Map<string, string>()
 
 // companyBlogLinkMap.set('Uber', 'https://eng.uber.com/feed/'); // FIXME: Not working
 
@@ -128,137 +128,137 @@ const companyBlogLinkMap = new Map<string, string>();
 
 // companyBlogLinkMap.set('Coinbase', 'https://engineering.coinbase.com/feed'); # TODO: Find rss feed
 
-companyBlogLinkMap.set('Heroku', 'https://blog.heroku.com/engineering/feed');
-companyBlogLinkMap.set('Cloudflare', 'https://blog.cloudflare.com/rss/');
-companyBlogLinkMap.set('Twitch', 'https://medium.com/feed/twitch-news/tagged/engineering');
-companyBlogLinkMap.set('Netflix', 'https://medium.com/feed/netflix-techblog');
-companyBlogLinkMap.set('Airbnb', 'https://medium.com/feed/airbnb-engineering');
-companyBlogLinkMap.set('Dropbox', 'https://blogs.dropbox.com/tech/feed/');
-companyBlogLinkMap.set('Pinterest', 'https://medium.com/feed/@Pinterest_Engineering');
-companyBlogLinkMap.set('Facebook', 'https://engineering.fb.com/feed/');
-companyBlogLinkMap.set('Twitter', 'https://blog.twitter.com/engineering/feed');
-companyBlogLinkMap.set('Instagram', 'https://instagram-engineering.com/feed');
-companyBlogLinkMap.set('Spotify', 'https://labs.spotify.com/feed/');
-companyBlogLinkMap.set('Slack', 'https://slack.engineering/feed');
-companyBlogLinkMap.set('Etsy', 'https://codeascraft.com/feed/');
+companyBlogLinkMap.set("Heroku", "https://blog.heroku.com/engineering/feed")
+companyBlogLinkMap.set("Cloudflare", "https://blog.cloudflare.com/rss/")
+companyBlogLinkMap.set("Twitch", "https://medium.com/feed/twitch-news/tagged/engineering")
+companyBlogLinkMap.set("Netflix", "https://medium.com/feed/netflix-techblog")
+companyBlogLinkMap.set("Airbnb", "https://medium.com/feed/airbnb-engineering")
+companyBlogLinkMap.set("Dropbox", "https://blogs.dropbox.com/tech/feed/")
+companyBlogLinkMap.set("Pinterest", "https://medium.com/feed/@Pinterest_Engineering")
+companyBlogLinkMap.set("Facebook", "https://engineering.fb.com/feed/")
+companyBlogLinkMap.set("Twitter", "https://blog.twitter.com/engineering/feed")
+companyBlogLinkMap.set("Instagram", "https://instagram-engineering.com/feed")
+companyBlogLinkMap.set("Spotify", "https://labs.spotify.com/feed/")
+companyBlogLinkMap.set("Slack", "https://slack.engineering/feed")
+companyBlogLinkMap.set("Etsy", "https://codeascraft.com/feed/")
 
 
-function createChecksum(inputString: string, algorithm: string = 'sha256'): string {
-    const hash = createHash(algorithm);
-    hash.update(inputString);
-    return hash.digest('hex');
-  }
+function createChecksum(inputString: string, algorithm: string = "sha256"): string {
+    const hash = createHash(algorithm)
+    hash.update(inputString)
+    return hash.digest("hex")
+}
 
 
 export const fetchAndInsertBlogPosts = async (limit: number) => {
-    const parsedItems = new Map<string, BlogPostEntry>();
+    const parsedItems = new Map<string, BlogPostEntry>()
 
     for (const companyName of companyBlogLinkMap.keys()) {
-      const url = companyBlogLinkMap.get(companyName);
+        const url = companyBlogLinkMap.get(companyName)
 
-      const blogEntryRecord = await getBlogByCompanyName(companyName);
+        const blogEntryRecord = await getBlogByCompanyName(companyName)
 
-      try {
-        const response = await fetch(url!);
+        try {
+            const response = await fetch(url!)
 
-        if (!response.ok) {
-          throw new Error(`Failed to fetch data from ${url}`);
-        }
-
-        const xmlData = await response.text();
-
-        const parsePromise = new Promise<Map<string, BlogPostEntry>>((resolve, reject) => {
-          parseString(xmlData, async (err, result) => {
-            if (err) {
-              console.error('Failed to parse XML data:', err);
-              reject(err);
-            } else {
-              const rssVersion = result.rss.$.version;
-              const allItems = result.rss.channel[0];
-
-              const totalPosts = allItems.item.length;
-
-              for (let i = 0; i < totalPosts; i++) {
-                const item = allItems.item[i];
-
-                const title = item.title[0];
-                const link = item.link[0];
-                const publishedDate = item.pubDate[0];
-
-                if (!publishedDate) {
-                    continue;
-                }
-
-                const author = item['dc:creator']?.[0] || item.author?.[0];
-
-                const timestamp = new Date(publishedDate);
-
-                const titleHash = createChecksum(title);
-
-                await createBlogPostEntry({
-                    title,
-                    link,
-                    publishedDate: timestamp,
-                    author,
-                    blog_id: blogEntryRecord[0].id,
-                    titleHash,
-                })
-
-                const parsedObject = {
-                  title,
-                  link,
-                  publishedDate,
-                  author
-                } as BlogPostEntry;
-
-                parsedItems.set(`${companyName}-${i}`, parsedObject);
-              }
-
-              resolve(parsedItems);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch data from ${url}`)
             }
-          });
-        });
 
-        await parsePromise;
-      } catch (error) {
-        console.error('Error:', error);
-      }
+            const xmlData = await response.text()
+
+            const parsePromise = new Promise<Map<string, BlogPostEntry>>((resolve, reject) => {
+                parseString(xmlData, async (err, result) => {
+                    if (err) {
+                        console.error("Failed to parse XML data:", err)
+                        reject(err)
+                    } else {
+                        // const rssVersion = result.rss.$.version
+                        const allItems = result.rss.channel[0]
+
+                        const totalPosts = allItems.item.length
+
+                        for (let i = 0; i < limit ? limit : totalPosts; i++) {
+                            const item = allItems.item[i]
+
+                            const title = item.title[0]
+                            const link = item.link[0]
+                            const publishedDate = item.pubDate[0]
+
+                            if (!publishedDate) {
+                                continue
+                            }
+
+                            const author = item["dc:creator"]?.[0] || item.author?.[0]
+
+                            const timestamp = new Date(publishedDate)
+
+                            const titleHash = createChecksum(title)
+
+                            await createBlogPostEntry({
+                                title,
+                                link,
+                                publishedDate: timestamp,
+                                author,
+                                blog_id: blogEntryRecord[0].id,
+                                titleHash,
+                            })
+
+                            const parsedObject = {
+                                title,
+                                link,
+                                publishedDate,
+                                author
+                            } as BlogPostEntry
+
+                            parsedItems.set(`${companyName}-${i}`, parsedObject)
+                        }
+
+                        resolve(parsedItems)
+                    }
+                })
+            })
+
+            await parsePromise
+        } catch (error) {
+            console.error("Error:", error)
+        }
     }
 
-    return parsedItems;
-  };
+    return parsedItems
+}
 
 
 export const populateBlogEntries = async () => {
     for (const companyName of companyBlogLinkMap.keys()) {
-        const url = companyBlogLinkMap.get(companyName);
+        const url = companyBlogLinkMap.get(companyName)
         fetch(url!)
             .then((response) => {
-            if (response.ok) {
-                return response.text();
-            } else {
-                throw new Error(`Failed to fetch data from ${url}`);
-            }
+                if (response.ok) {
+                    return response.text()
+                } else {
+                    throw new Error(`Failed to fetch data from ${url}`)
+                }
             })
             .then((xmlData) => {
             // Parse XML data
-            parseString(xmlData, async (err, result) => {
-                if (err) {
-                console.error('Failed to parse XML data:', err);
-                } else {
-                const rssVersion = result.rss.$.version;
+                parseString(xmlData, async (err, result) => {
+                    if (err) {
+                        console.error("Failed to parse XML data:", err)
+                    } else {
+                        const rssVersion = result.rss.$.version
 
-                try {
-                    createAllBlogsEntry({ link: url, companyName, rssVersion })
-                } catch (e) {
-                    console.error(e);
-                }
-            }
-        });
-        })
-        .catch((error) => {
-        console.error('Error:', error);
-        });
+                        try {
+                            createAllBlogsEntry({ link: url, companyName, rssVersion })
+                        } catch (e) {
+                            console.error(e)
+                        }
+                    }
+                })
+            })
+            .catch((error) => {
+                console.error("Error:", error)
+            })
     }
 }
 

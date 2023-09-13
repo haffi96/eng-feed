@@ -1,0 +1,11 @@
+# Need a CI which runs typescript jest tests and then deploys with AWS CDK
+
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:

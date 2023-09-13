@@ -1,12 +1,12 @@
-import { Duration } from "aws-cdk-lib";
-import { Architecture, Runtime } from "aws-cdk-lib/aws-lambda";
-import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
-import { RetentionDays } from "aws-cdk-lib/aws-logs";
-import { Construct } from "constructs";
+import { Duration } from "aws-cdk-lib"
+import { Architecture, Runtime } from "aws-cdk-lib/aws-lambda"
+import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs"
+import { RetentionDays } from "aws-cdk-lib/aws-logs"
+import { Construct } from "constructs"
 import * as path from "path"
-import { config as dotenvConfig } from "dotenv";
+import { config as dotenvConfig } from "dotenv"
 
-dotenvConfig();
+dotenvConfig()
 
 export class GenericLambda extends NodejsFunction {
     constructor(scope: Construct, fileName: string) {

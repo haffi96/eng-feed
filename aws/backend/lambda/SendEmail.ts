@@ -1,6 +1,6 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
+import { APIGatewayProxyResult } from "aws-lambda"
 
-export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const handler = async (): Promise<APIGatewayProxyResult> => {
     try {
         // fetch is available with Node.js 18
         return {
@@ -8,14 +8,14 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
             body: JSON.stringify({
                 message: "Hello lambda!",
             }),
-        };
+        }
     } catch (err) {
-        console.log(err);
+        console.log(err)
         return {
             statusCode: 500,
             body: JSON.stringify({
-                message: 'some error happened',
+                message: "some error happened",
             }),
-        };
+        }
     }
-};
+}
