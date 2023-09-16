@@ -3,14 +3,12 @@ import { defineConfig } from "astro/config";
 // Plugins
 import tailwind from "@astrojs/tailwind";
 import preact from "@astrojs/preact";
-import node from '@astrojs/node';
+import vercel from "@astrojs/vercel/serverless";
 
 // https://astro.build/config
 export default defineConfig({
     output: 'server',
-    adapter: node({
-        mode: 'standalone',
-    }),
+    adapter: vercel(),
     server: {
         port: 4321
     },
