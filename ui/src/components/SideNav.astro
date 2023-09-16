@@ -7,37 +7,42 @@ const API_URL = import.meta.env.API_URL;
 const userId = 1;
 
 const res = await fetch(`${API_URL}/subscribed-blogs?userId=${userId}`, {
-  headers: {
-    "Content-Type": "application/json",
-  },
+    headers: {
+        "Content-Type": "application/json",
+    },
 });
 const subs: Subscription[] = await res.json();
 
 const comingSoonEntry = {
-  blogId: 1000,
-  blogLink: "/",
-  companyName: "More coming soon!",
+    blogId: 1000,
+    blogLink: "/",
+    companyName: "More coming soon!",
 };
 
 subs.push(comingSoonEntry);
 ---
 
 <nav
-  class="bg-zinc-400 dark:bg-zinc-500 w-2/6 text-center overflow-hidden space-y-5 dark:text-black p-1"
+    class="bg-zinc-300 dark:bg-zinc-500 w-2/6 text-center overflow-hidden space-y-5 dark:text-black p-1"
 >
-  <div class="w-7/8 lg:w-5/6 m-auto pt-5 space-y-5">
-    <a
-      href="/posts/1"
-      class="hover:bg-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100
+    <div class="w-7/8 lg:w-5/6 m-auto pt-5 space-y-5">
+        <a
+            href="/posts/1"
+            class="hover:bg-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100
       text-center m-auto flex justify-center items-center"
-      >Home</a
-    >
-    <ul>
-      <details open class="cursor-pointer">
-        <summary class="text-zinc-800 text-xs lg:text-lg">Subscriptions</summary
+            >Home</a
         >
-        <AllSubscriptionsList client:load apiUrl={API_URL} subs={subs} />
-      </details>
-    </ul>
-  </div>
+        <ul>
+            <details open class="cursor-pointer">
+                <summary class="text-zinc-800 text-xs lg:text-lg"
+                    >Subscriptions</summary
+                >
+                <AllSubscriptionsList
+                    client:load
+                    apiUrl={API_URL}
+                    subs={subs}
+                />
+            </details>
+        </ul>
+    </div>
 </nav>

@@ -1,58 +1,69 @@
 ---
-export const prerender = false;
-
 import Layout from "../../layouts/Layout.astro";
 import ThemeButton from "../../components/ThemeToggle";
 import BlogView from "../../components/BlogView.astro";
 import type { Post } from "../../types";
 
-export async function getStaticPaths({ paginate }: any) {
-  const API_URL = import.meta.env.API_URL as string;
-  const res = await fetch(`${API_URL}/posts?userId=1&offset=0&limit=50`, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  const postsData: Post[] = await res.json();
+const { page } = Astro.params;
 
-  return paginate(postsData, { pageSize: 5 });
+export async function fetchPostsForPage(page: number) {
+    const API_URL = import.meta.env.API_URL as string;
+    const limit = 10;
+    const offset = (page - 1) * limit;
+
+    const res = await fetch(
+        `${API_URL}/posts?userId=1&offset=${offset}&limit=${limit}`,
+        {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        },
+    );
+    const postsData: Post[] = await res.json();
+    return postsData;
 }
 
-const { page } = Astro.props;
+const pageNumber = Number(page);
+
+const prevPage = pageNumber !== 1 ? pageNumber - 1 : 1;
+
+const posts = await fetchPostsForPage(pageNumber);
+
+const nextPage = posts.length > 1 ? pageNumber + 1 : pageNumber;
 ---
 
 <Layout title="Engineering blogs">
     <main>
-    <div class="text-end">
-      <ThemeButton client:only />
-    </div>
-    <div class="items-center text-center p-5">
-      <div>
-        <h1 class="text-xl font-extrabold">Latest posts</h1>
-        <div class="flex flex-row space-x-1">
-        {page.url.prev &&
-            <a
-                href=`${page.url.prev}`
-                class="hover:bg-zinc-600 shadow-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100"
-            >
-                Prev
-            </a>
-        }
-        {page.url.next &&
-            <a
-                href=`${page.url.next}`
-                class="hover:bg-zinc-600 shadow-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100"
-            >
-                Next
-            </a>
-        }
+        <div class="text-end">
+            <ThemeButton client:only />
         </div>
-      </div>
-      {
-        page.data.map((p: any) => {
-          return <BlogView blog={p} />;
-        })
-      }
-    </div>
-  </main>
+        <div class="items-center text-center p-5">
+            <div>
+                <h1 class="text-xl font-extrabold">Latest posts</h1>
+                <div class="flex flex-row space-x-1">
+                    <a
+                        href=`/posts/${prevPage}`
+                        class="hover:bg-zinc-600 shadow-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100"
+                    >
+                        Prev
+                    </a>
+                    <a
+                        href=`/posts/${nextPage}`
+                        class="hover:bg-zinc-600 shadow-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100"
+                    >
+                        Next
+                    </a>
+                </div>
+            </div>
+            {
+                posts.length > 1 ? (
+                    posts.map((p: any) => {
+                        return <BlogView blog={p} />;
+                    })
+                ) : (
+                    <div class="text-lg p-10">No more posts...</div>
+                )
+            }
+        </div>
+    </main>
 </Layout>
