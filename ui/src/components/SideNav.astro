@@ -1,7 +1,7 @@
 ---
 import type { Subscription } from "../types";
 import AllSubscriptionsList from "./allSubscriptions";
-import { SignIn, SignOut } from "auth-astro/components";
+import { SignOut } from "auth-astro/components";
 import { getSession } from "auth-astro/server";
 
 const session = await getSession(Astro.request);
@@ -24,13 +24,16 @@ const comingSoonEntry = {
     blogId: 1000,
     blogLink: "/",
     companyName: "More coming soon!",
+    subscribed: false,
 };
 
 subs.push(comingSoonEntry);
 ---
 
 <nav
-    class="bg-zinc-300 dark:bg-zinc-500 w-2/6 text-center overflow-hidden space-y-5 dark:text-black p-1"
+    class="bg-zinc-300 dark:bg-zinc-500 w-1/4 lg:w-1/6
+text-center overflow-hidden overflow-y-scroll space-y-5 dark:text-black
+p-1 h-full fixed top-0 left-0 hidden md:block"
 >
     <div class="w-7/8 lg:w-5/6 m-auto pt-5 space-y-5">
         <a
@@ -39,23 +42,29 @@ subs.push(comingSoonEntry);
       text-center m-auto flex justify-center items-center"
             >Home</a
         >
-        {
-            session ? (
-                <SignOut class="hover:bg-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100">
-                    Sign out
-                </SignOut>
-            ) : (
-                <SignIn class="bg-[#4285F4] p-2 rounded-lg" provider="google">
-                    Sign in with Google
-                </SignIn>
-            )
-        }
+        <div>
+            {
+                session ? (
+                    <SignOut class="hover:bg-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100">
+                        Sign out
+                    </SignOut>
+                ) : (
+                    <a
+                        class="hover:bg-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100"
+                        href="/login"
+                    >
+                        Sign in
+                    </a>
+                )
+            }
+        </div>
         <ul>
             <details class="cursor-pointer">
                 <summary class="text-zinc-800 text-xs lg:text-lg"
                     >Subscriptions</summary
                 >
                 <AllSubscriptionsList
+                    userEmail={userEmail}
                     client:load
                     apiUrl={API_URL}
                     subs={subs}

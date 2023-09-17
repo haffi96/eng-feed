@@ -1,13 +1,14 @@
 import { useState } from "preact/hooks";
 import type { Subscription } from "../types";
-import UnSubscribeButton from "./unSubscribeButton";
+import SubscribeActionButton from "./unSubscribeButton";
 
 interface SubscribedBlogItemProps {
+    userEmail?: string;
     apiUrl: string;
     subs: Subscription[];
 }
 
-export default function AllSubscriptionsList({ apiUrl, subs }: SubscribedBlogItemProps) {
+export default function AllSubscriptionsList({ userEmail, apiUrl, subs }: SubscribedBlogItemProps) {
     const [subscribedBlogs, setSubscribedBlogs] = useState<Subscription[]>(subs);
 
     const removeSubAction = (blogId: number) => {
@@ -27,7 +28,8 @@ export default function AllSubscriptionsList({ apiUrl, subs }: SubscribedBlogIte
                                 {sub.companyName}
                             </a>
                             <div class="hidden md:block">
-                                <UnSubscribeButton
+                                <SubscribeActionButton
+                                    userEmail={userEmail}
                                     sub={sub}
                                     removeSubAction={removeSubAction}
                                 />

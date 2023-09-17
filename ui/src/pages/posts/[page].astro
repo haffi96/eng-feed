@@ -6,14 +6,13 @@ import type { Post } from "../../types";
 import { getSession } from "auth-astro/server";
 
 const session = await getSession(Astro.request);
+const { page } = Astro.params;
 
 if (session && Date.parse(session.expires) < Date.now()) {
     return Astro.redirect("/login");
 }
 
 const userEmail = session?.user?.email || undefined;
-
-const { page } = Astro.params;
 
 export async function fetchPostsForPage(page: number, userEmail?: string) {
     const API_URL = import.meta.env.API_URL as string;
@@ -24,7 +23,9 @@ export async function fetchPostsForPage(page: number, userEmail?: string) {
         ? `${API_URL}/posts?userEmail=${userEmail}&`
         : `${API_URL}/posts?`;
 
-    const res = await fetch(`${baseUrl}offset=${offset}&limit=${limit}`, {
+    const url = `${baseUrl}offset=${offset}&limit=${limit}`;
+
+    const res = await fetch(url, {
         headers: {
             "Content-Type": "application/json",
         },
@@ -34,11 +35,8 @@ export async function fetchPostsForPage(page: number, userEmail?: string) {
 }
 
 const pageNumber = Number(page);
-
 const prevPage = pageNumber !== 1 ? pageNumber - 1 : 1;
-
 const posts = await fetchPostsForPage(pageNumber, userEmail);
-
 const nextPage = posts.length > 1 ? pageNumber + 1 : pageNumber;
 ---
 

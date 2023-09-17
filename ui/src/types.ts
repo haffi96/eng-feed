@@ -13,4 +13,5 @@ export interface Subscription {
     blogId: number;
     blogLink: string;
     companyName: string;
+    subscribed: boolean;
 }

@@ -11,7 +11,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
         const posts = userEmail
             ? await fetchAllPostsForUser({ userEmail, offset, limit })
-            : await fetchAllPosts({ offset: 0, limit: 30 })
+            : await fetchAllPosts({ offset, limit })
         return {
             statusCode: 200,
             body: JSON.stringify(posts),

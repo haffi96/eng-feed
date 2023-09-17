@@ -26,6 +26,31 @@ export const fetchUserSubscribedBlogs = async (userEmail: string) => {
         .innerJoin(sq, eq(allBlogs.id, sq.blog_id))
 }
 
+export const fetchUserBlogsWithSubscriptionStatus = async (userEmail: string) => {
+    const userQuery = db
+        .select({ userId: users.id })
+        .from(users)
+        .where(eq(users.email, userEmail))
+        .as("userQuery")
+
+    const sq = db
+        .select({ blog_id: userBlogs.blog_id })
+        .from(userBlogs)
+        .innerJoin(userQuery, eq(userBlogs.user_id, userQuery.userId))
+        .as("sq")
+
+    return await db
+        .select({
+            blogId: allBlogs.id,
+            blogLink: allBlogs.link,
+            companyName: allBlogs.companyName,
+            subscribed: sql`sq.blog_id IS NOT NULL` // Check if there is a subscription
+        })
+        .from(allBlogs)
+        .leftJoin(sq, eq(allBlogs.id, sq.blog_id)) // Left join to include unsubscribed blogs
+}
+
+
 
 // AllBlogs table
 export const createAllBlogsEntry = async (newBlogParams: newBlogEntry) => {
@@ -177,11 +202,15 @@ export const fetchTodaysUsersToNotify = async () => {
 //     console.log(users);
 // });
 
-// fetchAllPostsForUser({ userEmail: "haff@test.com", offset: 0, limit: 10 }).then((posts) => {
+// fetchAllPostsForUser({ userEmail: "haffimazhar96@gmail.com", offset: 0, limit: 10 }).then((posts) => {
 //     console.log(posts)
 // })
 
 // fetchUserSubscribedBlogs("haff@test.com").then((res) => {
+//     console.log(res)
+// })
+
+// fetchAllPosts({ offset: 20, limit: 10 }).then((res) => {
 //     console.log(res)
 // })
 
@@ -197,3 +226,7 @@ export const fetchTodaysUsersToNotify = async () => {
 // fetchNewPosts().then((res) => {
 //     console.log(res);
 // });
+
+// fetchUserBlogsWithSubscriptionStatus("haffimazhar96@gmail.com").then((res) => {
+//     console.log(res)
+// })
