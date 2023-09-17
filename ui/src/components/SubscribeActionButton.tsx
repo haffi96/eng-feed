@@ -2,12 +2,13 @@ import { useState } from "preact/hooks";
 import type { Subscription } from "../types";
 
 interface SubscribedBlogItemProps {
+    apiUrl: string;
     userEmail?: string;
     sub: Subscription;
     removeSubAction: (blogId: number) => void;
 }
 
-export default function SubscribeActionButton({ userEmail, sub, removeSubAction }: SubscribedBlogItemProps) {
+export default function SubscribeActionButton({ apiUrl, userEmail, sub, removeSubAction }: SubscribedBlogItemProps) {
     const [unSubTrigger, setUnSubTrigger] = useState<boolean>(false);
 
     const unSub = (blogId: number) => {
@@ -23,6 +24,20 @@ export default function SubscribeActionButton({ userEmail, sub, removeSubAction 
 
     const redirectToLogin = () => {
         window.location.href = `/login`;
+    }
+
+    async function addSubscriptionForUser(blogId: number) {
+        await fetch(`/api/addSub`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                userEmail,
+                blogId
+            }),
+        });
+        window.location.reload();
     }
 
     const iconRef = !sub.subscribed || userEmail === undefined ? "/add-outline.svg" : "/removeIcon.svg";
@@ -53,7 +68,7 @@ export default function SubscribeActionButton({ userEmail, sub, removeSubAction 
         return (
             <button
                 class="hover:bg-green-400 rounded-xl"
-            // onClick={() => unSubRequest(sub.blogId)}
+                onClick={() => addSubscriptionForUser(sub.blogId)}
             >
                 <img src={iconRef} alt="Subscribe" />
             </button>

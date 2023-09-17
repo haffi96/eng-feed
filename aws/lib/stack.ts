@@ -100,13 +100,18 @@ export class TestStack extends cdk.Stack {
         // API Lambdas
         const postsLambda = new GenericLambda(this, "Posts")
         const getSubscribedBlogsLambda = new GenericLambda(this, "GetSubscribedBlogs")
+        const upsertUserLambda = new GenericLambda(this, "upsertUser")
+        const addUserSubscriptionLambda = new GenericLambda(this, "addUserSubscription")
+
 
         // API Routes
         api.addIntegration("GET", "/posts", postsLambda)
         api.addIntegration("GET", "/subscribed-blogs", getSubscribedBlogsLambda)
+        api.addIntegration("POST", "/user", upsertUserLambda)
+        api.addIntegration("POST", "/subscribe", addUserSubscriptionLambda)
 
         // Create an SQS event source for NotifyUsers Lambda to process messages from the queue
-        const eventSource = new lambdaEventSources.SqsEventSource(queue, { batchSize: 1 } )
+        const eventSource = new lambdaEventSources.SqsEventSource(queue, { batchSize: 1 })
         sendEmailLambda.addEventSource(eventSource)
     }
 }

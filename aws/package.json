@@ -11,7 +11,7 @@
     "migrate": "npx ts-node backend/db/migrate.ts",
     "db-push": "npx drizzle-kit push:pg --config backend/db/config.ts",
     "db-studio": "npx drizzle-kit studio --config backend/db/config.ts --port 5000",
-    "lint": "eslint ."
+    "lint": "eslint . --fix"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.119",

@@ -8,6 +8,10 @@ export type blogEntry = typeof allBlogs.$inferSelect;
 export type newBlogPostEntry = typeof blogPosts.$inferInsert;
 
 // Users table
+export const upsertUserEntry = async (newUserParams: typeof users.$inferInsert) => {
+    return await db.insert(users).values(newUserParams).onConflictDoNothing({ target: [users.email] })
+}
+
 export const fetchUserById = async (userId: number) => {
     return await db.select({ userUuid: users.user_uuid }).from(users).where(eq(users.id, userId))
 }
@@ -49,7 +53,6 @@ export const fetchUserBlogsWithSubscriptionStatus = async (userEmail: string) =>
         .from(allBlogs)
         .leftJoin(sq, eq(allBlogs.id, sq.blog_id)) // Left join to include unsubscribed blogs
 }
-
 
 
 // AllBlogs table
@@ -147,6 +150,15 @@ export const fetchUsersForBlog = async (blogId: number | null) => {
     return await db.select({ userId: userBlogs.user_id }).from(userBlogs).where(eq(userBlogs.blog_id, blogId!))
 }
 
+export const createUserBlogEntry = async (userEmail: string, blogId: number) => {
+    const userQuery = db.select({ userId: users.id }).from(users).where(eq(users.email, userEmail)).as("userQuery")
+
+    const result = await db.select({ userId: userQuery.userId }).from(userQuery)
+
+    const { userId } = result[0]
+
+    await db.insert(userBlogs).values({ user_id: userId, blog_id: blogId })
+}
 
 // UserPosts table
 export const createUserPostEntry = async (userId: number, postId: number) => {
@@ -228,5 +240,13 @@ export const fetchTodaysUsersToNotify = async () => {
 // });
 
 // fetchUserBlogsWithSubscriptionStatus("haffimazhar96@gmail.com").then((res) => {
+//     console.log(res)
+// })
+
+// upsertUserEntry({ email: "new@test.com" }).then((res) => {
+//     console.log(res)
+// })
+
+// createUserBlogEntry("new@test.com", 1).then((res) => {
 //     console.log(res)
 // })

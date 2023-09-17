@@ -6,3 +6,9 @@ interface ImportMetaEnv {
     readonly GOOGLE_CLIENT_ID: string;
     readonly GOOGLE_CLIENT_SECRET: string;
 }
+
+declare namespace App {
+    interface Locals {
+        userExists: boolean;
+    }
+}

@@ -5,17 +5,38 @@ import BlogView from "../../components/BlogView.astro";
 import type { Post } from "../../types";
 import { getSession } from "auth-astro/server";
 
-const session = await getSession(Astro.request);
 const { page } = Astro.params;
+const API_URL = import.meta.env.API_URL as string;
+
+// Get session and userEmail. Redirect to login if session is expired
+const session = await getSession(Astro.request);
 
 if (session && Date.parse(session.expires) < Date.now()) {
     return Astro.redirect("/login");
 }
-
 const userEmail = session?.user?.email || undefined;
+const userName = session?.user?.name || undefined;
 
-export async function fetchPostsForPage(page: number, userEmail?: string) {
-    const API_URL = import.meta.env.API_URL as string;
+// Upsert user with async request only on first page
+async function upsertUser(email: string, userName: string) {
+    fetch(`${API_URL}/user`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            email,
+            name: userName,
+        }),
+    });
+}
+
+if (Number(page) === 1) {
+    userEmail && userName && (await upsertUser(userEmail, userName));
+}
+
+// Fetch posts for page
+async function fetchPostsForPage(page: number, userEmail?: string) {
     const limit = 10;
     const offset = (page - 1) * limit;
 
@@ -34,6 +55,7 @@ export async function fetchPostsForPage(page: number, userEmail?: string) {
     return postsData;
 }
 
+// Page logic
 const pageNumber = Number(page);
 const prevPage = pageNumber !== 1 ? pageNumber - 1 : 1;
 const posts = await fetchPostsForPage(pageNumber, userEmail);

@@ -49,7 +49,7 @@ export const blogPosts = pgTable("blog_posts", {
     titleHash: varchar("title_hash", { length: 256 }).notNull().unique(),
     link: varchar("link", { length: 256 }),
     author: varchar("author", { length: 256 }),
-    publishedDate: timestamp("published_date", { mode: "date"}),
+    publishedDate: timestamp("published_date", { mode: "date" }),
     blog_id: integer("blog_id").references(() => allBlogs.id),
 }, (blogPosts) => {
     return {
@@ -63,7 +63,7 @@ export const userPosts = pgTable("user_posts", {
     user_id: integer("user_id").references(() => users.id),
     post_id: integer("post_id").references(() => blogPosts.id),
     emailed: boolean("emailed").notNull().default(false),
-    notificationDate: timestamp("notification_date", { mode: "date"})
+    notificationDate: timestamp("notification_date", { mode: "date" })
         .notNull()
         .default(utcTimestampSql),
     updatedAt: timestamp("updated_at"),
