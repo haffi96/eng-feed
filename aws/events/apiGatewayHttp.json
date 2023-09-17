@@ -9,7 +9,6 @@
     "Header2": "value1,value2"
   },
   "queryStringParameters": {
-    "userId": 1,
     "limit": 10,
     "offset": 0
   },

@@ -5,6 +5,8 @@ import tailwind from "@astrojs/tailwind";
 import preact from "@astrojs/preact";
 import vercel from "@astrojs/vercel/serverless";
 
+import auth from "auth-astro";
+
 // https://astro.build/config
 export default defineConfig({
     output: 'server',
@@ -12,8 +14,7 @@ export default defineConfig({
     server: {
         port: 4321
     },
-    integrations: [
-        tailwind(),
-        preact({ compat: true })
-    ]
+    integrations: [tailwind(), preact({
+        compat: true
+    }), auth()]
 });

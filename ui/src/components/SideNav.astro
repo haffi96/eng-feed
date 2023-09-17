@@ -1,12 +1,19 @@
 ---
 import type { Subscription } from "../types";
 import AllSubscriptionsList from "./allSubscriptions";
+import { SignIn, SignOut } from "auth-astro/components";
+import { getSession } from "auth-astro/server";
+
+const session = await getSession(Astro.request);
+const userEmail = session?.user?.email || undefined;
 
 const API_URL = import.meta.env.API_URL;
 
-const userId = 1;
+const baseUrl = userEmail
+    ? `${API_URL}/subscribed-blogs?userEmail=${userEmail}`
+    : `${API_URL}/subscribed-blogs`;
 
-const res = await fetch(`${API_URL}/subscribed-blogs?userId=${userId}`, {
+const res = await fetch(baseUrl, {
     headers: {
         "Content-Type": "application/json",
     },
@@ -32,8 +39,19 @@ subs.push(comingSoonEntry);
       text-center m-auto flex justify-center items-center"
             >Home</a
         >
+        {
+            session ? (
+                <SignOut class="hover:bg-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100">
+                    Sign out
+                </SignOut>
+            ) : (
+                <SignIn class="bg-[#4285F4] p-2 rounded-lg" provider="google">
+                    Sign in with Google
+                </SignIn>
+            )
+        }
         <ul>
-            <details open class="cursor-pointer">
+            <details class="cursor-pointer">
                 <summary class="text-zinc-800 text-xs lg:text-lg"
                     >Subscriptions</summary
                 >

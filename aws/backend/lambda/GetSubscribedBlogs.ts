@@ -1,13 +1,14 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda"
-import { fetchUserSubscribedBlogs } from "../db/query"
+import { fetchUserSubscribedBlogs, fetchAllBlogs } from "../db/query"
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const params = event.queryStringParameters
-    const userId = params?.userId ? parseInt(params.userId) : null
+    const userEmail = params?.userEmail
 
     try {
-        const subscribedBlogs = await fetchUserSubscribedBlogs(userId!)
-        console.log(subscribedBlogs)
+        const subscribedBlogs = userEmail
+            ? await fetchUserSubscribedBlogs(userEmail)
+            : await fetchAllBlogs()
         return {
             statusCode: 200,
             body: JSON.stringify(subscribedBlogs),

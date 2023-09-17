@@ -1,6 +1,6 @@
 import { db } from "./session"
-import { allBlogs, blogPosts, userBlogs, userPosts , users } from "./schema"
-import { eq, desc, sql, gt} from "drizzle-orm"
+import { allBlogs, blogPosts, userBlogs, userPosts, users } from "./schema"
+import { eq, desc, sql, gt } from "drizzle-orm"
 
 
 export type newBlogEntry = typeof allBlogs.$inferInsert;
@@ -12,8 +12,10 @@ export const fetchUserById = async (userId: number) => {
     return await db.select({ userUuid: users.user_uuid }).from(users).where(eq(users.id, userId))
 }
 
-export const fetchUserSubscribedBlogs = async (userId: number) => {
-    const sq = db.select({ blogId: userBlogs.blog_id }).from(userBlogs).where(eq(userBlogs.user_id, userId)).as("sq")
+export const fetchUserSubscribedBlogs = async (userEmail: string) => {
+    const userQuery = db.select({ userId: users.id }).from(users).where(eq(users.email, userEmail)).as("userQuery")
+
+    const sq = db.select({ blog_id: userBlogs.blog_id }).from(userBlogs).innerJoin(userQuery, eq(userBlogs.user_id, userQuery.userId)).as("sq")
 
     return await db.select({
         blogId: allBlogs.id,
@@ -21,7 +23,7 @@ export const fetchUserSubscribedBlogs = async (userId: number) => {
         companyName: allBlogs.companyName
     })
         .from(allBlogs)
-        .innerJoin(sq, eq(allBlogs.id, sq.blogId))
+        .innerJoin(sq, eq(allBlogs.id, sq.blog_id))
 }
 
 
@@ -34,8 +36,35 @@ export const getBlogByCompanyName = async (blogName: string): Promise<blogEntry[
     return await db.select().from(allBlogs).where(eq(allBlogs.companyName, blogName))
 }
 
+export const fetchAllBlogs = async () => {
+    return await db.select({
+        blogId: allBlogs.id,
+        blogLink: allBlogs.link,
+        companyName: allBlogs.companyName
+    }).from(allBlogs)
+}
+
 
 // BlogPosts table
+export const fetchAllPosts = async ({ offset, limit }: { offset: number, limit: number }) => {
+
+    return await db.select({
+        postId: blogPosts.id,
+        postUuid: blogPosts.post_uuid,
+        title: blogPosts.title,
+        link: blogPosts.link,
+        author: blogPosts.author,
+        publishedDate: blogPosts.publishedDate,
+        blogId: blogPosts.blog_id,
+        companyName: allBlogs.companyName,
+    })
+        .from(blogPosts)
+        .innerJoin(allBlogs, eq(allBlogs.id, blogPosts.blog_id))
+        .orderBy(desc(blogPosts.publishedDate))
+        .offset(offset)
+        .limit(limit)
+}
+
 export const createBlogPostEntry = async (newBlogPostParams: newBlogPostEntry) => {
     return await db
         .insert(blogPosts)
@@ -61,13 +90,15 @@ export const fetchPostById = async (postId: number) => {
 
 // UserBlogs table
 interface QueryAllPostsParams {
-    userId: number;
+    userEmail: string;
     offset: number;
     limit: number;
 }
 
-export const fetchAllPostsForUser = async ({ userId, offset, limit }: QueryAllPostsParams) => {
-    const sq = db.select().from(userBlogs).where(eq(userBlogs.user_id, userId)).as("sq")
+export const fetchAllPostsForUser = async ({ userEmail, offset, limit }: QueryAllPostsParams) => {
+    const userQuery = db.select({ userId: users.id }).from(users).where(eq(users.email, userEmail)).as("userQuery")
+
+    const sq = db.select({ blog_id: userBlogs.blog_id }).from(userBlogs).innerJoin(userQuery, eq(userBlogs.user_id, userQuery.userId)).as("sq")
 
     return await db.select({
         postId: blogPosts.id,
@@ -88,13 +119,13 @@ export const fetchAllPostsForUser = async ({ userId, offset, limit }: QueryAllPo
 }
 
 export const fetchUsersForBlog = async (blogId: number | null) => {
-    return await db.select({userId: userBlogs.user_id}).from(userBlogs).where(eq(userBlogs.blog_id, blogId!))
+    return await db.select({ userId: userBlogs.user_id }).from(userBlogs).where(eq(userBlogs.blog_id, blogId!))
 }
 
 
 // UserPosts table
 export const createUserPostEntry = async (userId: number, postId: number) => {
-    return await db.insert(userPosts).values({user_id: userId, post_id: postId})
+    return await db.insert(userPosts).values({ user_id: userId, post_id: postId })
 }
 
 
@@ -146,14 +177,18 @@ export const fetchTodaysUsersToNotify = async () => {
 //     console.log(users);
 // });
 
-// fetchAllPostsForUser({ userId: 1, offset: 0, limit: 10 }).then((posts) => {
-//     console.log(posts);
-// });
+// fetchAllPostsForUser({ userEmail: "haff@test.com", offset: 0, limit: 10 }).then((posts) => {
+//     console.log(posts)
+// })
 
-// fetchUserSubscribedBlogs(1).then((res) => {
-//     console.log(res);
-// });
+// fetchUserSubscribedBlogs("haff@test.com").then((res) => {
+//     console.log(res)
+// })
 
+
+// fetchAllBlogs().then((res) => {
+//     console.log(res)
+// })
 
 // getBlogByCompanyName('Cloudflare').then((res) => {
 //     console.log(res);

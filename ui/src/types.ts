@@ -7,10 +7,10 @@ export interface Post {
     publishedDate: Date;
     blog_id: number;
     companyName: string;
-  }
+}
 
 export interface Subscription {
     blogId: number;
     blogLink: string;
     companyName: string;
-  }
+}
