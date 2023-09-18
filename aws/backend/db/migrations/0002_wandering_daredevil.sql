@@ -1,0 +1,1 @@
+ALTER TABLE "all_blogs" ADD COLUMN "https_link" varchar(256);

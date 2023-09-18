@@ -22,6 +22,7 @@ export const allBlogs = pgTable("all_blogs", {
     id: serial("id").primaryKey(),
     blog_uuid: uuid("blog_uuid").notNull().default(uuidSql),
     link: varchar("link", { length: 256 }),
+    httpsLink: varchar("https_link", { length: 256 }),
     companyName: varchar("company", { length: 256 }),
     rssVersion: varchar("rss_version", { length: 256 }),
 }, (allBlogs) => {

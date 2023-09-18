@@ -46,7 +46,7 @@ export const fetchUserBlogsWithSubscriptionStatus = async (userEmail: string) =>
     return await db
         .select({
             blogId: allBlogs.id,
-            blogLink: allBlogs.link,
+            blogLink: allBlogs.httpsLink,
             companyName: allBlogs.companyName,
             subscribed: sql`sq.blog_id IS NOT NULL` // Check if there is a subscription
         })
@@ -67,7 +67,7 @@ export const getBlogByCompanyName = async (blogName: string): Promise<blogEntry[
 export const fetchAllBlogs = async () => {
     return await db.select({
         blogId: allBlogs.id,
-        blogLink: allBlogs.link,
+        blogLink: allBlogs.httpsLink,
         companyName: allBlogs.companyName
     }).from(allBlogs)
 }

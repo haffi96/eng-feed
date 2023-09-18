@@ -150,7 +150,7 @@ function createChecksum(inputString: string, algorithm: string = "sha256"): stri
 }
 
 
-export const fetchAndInsertBlogPosts = async (limit: number) => {
+export const fetchAndInsertBlogPosts = async (limit?: number) => {
     const parsedItems = new Map<string, BlogPostEntry>()
 
     for (const companyName of companyBlogLinkMap.keys()) {
@@ -178,7 +178,9 @@ export const fetchAndInsertBlogPosts = async (limit: number) => {
 
                         const totalPosts = allItems.item.length
 
-                        for (let i = 0; i < limit ? limit : totalPosts; i++) {
+                        const total = limit || totalPosts
+
+                        for (let i = 0; i < total; i++) {
                             const item = allItems.item[i]
 
                             const title = item.title[0]
@@ -241,15 +243,16 @@ export const populateBlogEntries = async () => {
                 }
             })
             .then((xmlData) => {
-            // Parse XML data
+                // Parse XML data
                 parseString(xmlData, async (err, result) => {
                     if (err) {
                         console.error("Failed to parse XML data:", err)
                     } else {
                         const rssVersion = result.rss.$.version
+                        const mainLink = result.rss.channel[0].link[0]
 
                         try {
-                            createAllBlogsEntry({ link: url, companyName, rssVersion })
+                            createAllBlogsEntry({ link: url, httpsLink: mainLink, companyName, rssVersion })
                         } catch (e) {
                             console.error(e)
                         }
@@ -262,11 +265,10 @@ export const populateBlogEntries = async () => {
     }
 }
 
-// populateBlogEntries();
+// populateBlogEntries()
 // const run = async () => {
-//     const data = await fetchAndInsertBlogPosts(5);
-//     console.log(data);
-
+//     const data = await fetchAndInsertBlogPosts()
+//     console.log(data)
 // }
 
-// run();
+// run()
