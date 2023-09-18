@@ -1,0 +1,39 @@
+---
+import SideBarItems from "./SideBarItems.tsx";
+import { SignOut } from "auth-astro/components";
+import type { Subscription } from "../types";
+import type { Session } from "@auth/core/types";
+
+interface Props {
+    session: Session | null;
+    userEmail?: string;
+    apiUrl: string;
+    subs: Subscription[];
+}
+
+const { session, userEmail, apiUrl, subs } = Astro.props;
+---
+
+<nav
+    class="bg-zinc-300 dark:bg-zinc-500 w-1/4 lg:w-1/6
+text-center overflow-hidden overflow-y-scroll space-y-5
+p-1 h-full fixed top-0 left-0 hidden lg:block"
+>
+    <div>
+        {
+            session ? (
+                <SignOut class="hover:bg-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100">
+                    Sign out
+                </SignOut>
+            ) : (
+                <a
+                    class="hover:bg-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100"
+                    href="/login"
+                >
+                    Sign in
+                </a>
+            )
+        }
+    </div>
+    <SideBarItems apiUrl={apiUrl} subs={subs} userEmail={userEmail} />
+</nav>

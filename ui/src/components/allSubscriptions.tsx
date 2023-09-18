@@ -18,7 +18,7 @@ export default function AllSubscriptionsList({ userEmail, apiUrl, subs }: Subscr
 
 
     return (
-        <div class="flex flex-col space-y-2 lg:p-2 text-sm md:text-lg">
+        <div class="flex flex-col space-y-2 lg:p-2 text-sm">
             {
                 subscribedBlogs.map((sub) => {
                     return (
@@ -27,7 +27,7 @@ export default function AllSubscriptionsList({ userEmail, apiUrl, subs }: Subscr
                             <a class="w-full" href={`${sub.blogLink}`}>
                                 {sub.companyName}
                             </a>
-                            <div class="hidden md:block">
+                            <div>
                                 <SubscribeActionButton
                                     apiUrl={apiUrl}
                                     userEmail={userEmail}
