@@ -10,6 +10,9 @@ jobs:
     defaults:
       run:
         working-directory: ./aws
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      ENV: dev
     steps:
       - name: Check out code
         uses: actions/checkout@v4
