@@ -1,7 +1,7 @@
 import * as cdk from "aws-cdk-lib"
 import { Construct } from "constructs"
 import "source-map-support/register"
-import * as ec2 from "aws-cdk-lib/aws-ec2"
+// import * as ec2 from "aws-cdk-lib/aws-ec2"
 // import * as rds from "aws-cdk-lib/aws-rds"
 import * as sqs from "aws-cdk-lib/aws-sqs"
 import * as sns from "aws-cdk-lib/aws-sns"
@@ -21,16 +21,16 @@ export class TestStack extends cdk.Stack {
         // const defaultVpc = ec2.Vpc.fromLookup(this, "default-vpc", { vpcId: "vpc-004c22d6b0586f89a" })
 
         // Fetch security group from existing security group ID
-        const securityGroup = ec2.SecurityGroup.fromSecurityGroupId(this, "test-sg-group", "sg-04a2f17075bbb4551")
+        // const securityGroup = ec2.SecurityGroup.fromSecurityGroupId(this, "test-sg-group", "sg-04a2f17075bbb4551")
 
-        const dbPort = 5432
+        // const dbPort = 5432
 
         // Add Inbound rule for testing
-        securityGroup.addIngressRule(
-            ec2.Peer.anyIpv4(),
-            ec2.Port.tcp(dbPort),
-            "Allow port 5432 for database connection from anywhere"
-        )
+        // securityGroup.addIngressRule(
+        //     ec2.Peer.anyIpv4(),
+        //     ec2.Port.tcp(dbPort),
+        //     "Allow port 5432 for database connection from anywhere"
+        // )
 
         // Add Inbound rule
         // securityGroup.addIngressRule(
