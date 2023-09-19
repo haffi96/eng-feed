@@ -1,0 +1,41 @@
+name: CDK Deploy
+
+on:
+  push:
+    branches: ["master"]
+
+jobs:
+  aws_cdk:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./aws
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "npm"
+          cache-dependency-path: ./aws/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install AWS CDK
+        run: npm i -g aws-cdk
+
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@master
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: "eu-west-2"
+
+      - name: Synth stack
+        run: cdk synth
+
+      - name: Deploy stack
+        run: cdk deploy --all --require-approval never
