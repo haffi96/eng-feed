@@ -19,6 +19,7 @@
     "@types/jest": "^29.5.4",
     "@types/node": "20.5.7",
     "@types/pg": "^8.10.2",
+    "@types/uuid": "^9.0.4",
     "@types/xml2js": "^0.4.12",
     "@typescript-eslint/eslint-plugin": "^6.7.0",
     "@typescript-eslint/parser": "^6.7.0",
@@ -31,6 +32,7 @@
     "typescript": "~5.2.2"
   },
   "dependencies": {
+    "@aws-sdk/client-sqs": "^3.414.0",
     "@types/source-map-support": "^0.5.7",
     "aws-cdk-lib": "2.94.0",
     "constructs": "^10.0.0",
@@ -40,6 +42,7 @@
     "pg": "^8.11.3",
     "postgres": "^3.3.5",
     "source-map-support": "^0.5.21",
+    "uuid": "^9.0.1",
     "xml2js": "^0.6.2"
   }
 }

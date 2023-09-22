@@ -211,14 +211,14 @@ export const fetchTodaysUsersToNotify = async () => {
 
 
 // fetchTodaysUsersToNotify().then((users) => {
-//     console.log(users);
-// });
+//     console.log(users)
+// })
 
 // fetchAllPostsForUser({ userEmail: "haffimazhar96@gmail.com", offset: 0, limit: 10 }).then((posts) => {
 //     console.log(posts)
 // })
 
-// fetchUserSubscribedBlogs("haff@test.com").then((res) => {
+// fetchUserSubscribedBlogs("haffimazhar96@gmail.com").then((res) => {
 //     console.log(res)
 // })
 

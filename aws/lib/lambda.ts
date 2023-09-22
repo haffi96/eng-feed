@@ -13,12 +13,14 @@ export class GenericLambda extends NodejsFunction {
         super(scope, fileName, {
             architecture: Architecture.ARM_64,
             runtime: Runtime.NODEJS_18_X,
-            entry: path.join(__dirname,`../backend/lambda/${fileName}.ts`),
+            entry: path.join(__dirname, `../backend/lambda/${fileName}.ts`),
             logRetention: RetentionDays.ONE_DAY,
             timeout: Duration.seconds(30),
             environment: {
                 TEST_SECRET: "foo",
                 DATABASE_URL: process.env.DATABASE_URL as string,
+                ENV: process.env.ENV as string,
+                SQS_QUEUE_URL: process.env.SQS_QUEUE_URL as string,
             }
         })
     }

@@ -12,6 +12,7 @@ import * as targets from "aws-cdk-lib/aws-events-targets"
 import * as lambdaEventSources from "aws-cdk-lib/aws-lambda-event-sources"
 import { GenericLambda } from "./lambda"
 import { ApiGateway } from "./apiGateway"
+import { CfnOutput } from "aws-cdk-lib"
 
 export class TestStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -113,5 +114,11 @@ export class TestStack extends cdk.Stack {
         // Create an SQS event source for NotifyUsers Lambda to process messages from the queue
         const eventSource = new lambdaEventSources.SqsEventSource(queue, { batchSize: 1 })
         sendEmailLambda.addEventSource(eventSource)
+
+
+        // Export values
+        new CfnOutput(this, "SQSQueueUrl", {
+            value: queue.queueUrl,
+        })
     }
 }
