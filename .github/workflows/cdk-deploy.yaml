@@ -13,6 +13,7 @@ jobs:
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       ENV: dev
+      SQS_QUEUE_URL: ${{ secrets.SQS_QUEUE_URL }}
     steps:
       - name: Check out code
         uses: actions/checkout@v4
