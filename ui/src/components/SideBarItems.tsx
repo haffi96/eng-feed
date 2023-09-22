@@ -9,7 +9,6 @@ interface Props {
 
 const SideBarItems = ({ userEmail, apiUrl, subs }: Props) => {
     return (
-
         <div class="w-7/8 lg:w-5/6 m-auto space-y-5 mt-20">
             <a
                 href="/posts/1"
