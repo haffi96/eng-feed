@@ -1,12 +1,12 @@
-import { APIGatewayProxyResult } from "aws-lambda"
+import { APIGatewayProxyResult, SQSEvent } from "aws-lambda"
 
-export const handler = async (): Promise<APIGatewayProxyResult> => {
+export const handler = async (event: SQSEvent): Promise<APIGatewayProxyResult> => {
     try {
         // fetch is available with Node.js 18
         return {
             statusCode: 200,
             body: JSON.stringify({
-                message: "Hello lambda!",
+                message: event,
             }),
         }
     } catch (err) {
