@@ -16,6 +16,12 @@ export const fetchUserById = async (userId: number) => {
     return await db.select({ userUuid: users.user_uuid }).from(users).where(eq(users.id, userId))
 }
 
+export const fetchuEmailserByUuid = async (userUuid: string) => {
+    const result = await db.select({ userEmail: users.email }).from(users).where(eq(users.user_uuid, userUuid))
+    const { userEmail } = result[0]
+    return userEmail
+}
+
 export const fetchUserSubscribedBlogs = async (userEmail: string) => {
     const userQuery = db.select({ userId: users.id }).from(users).where(eq(users.email, userEmail)).as("userQuery")
 
@@ -102,7 +108,7 @@ export const createBlogPostEntry = async (newBlogPostParams: newBlogPostEntry) =
 
 export const fetchNewPosts = async () => {
     const dateDelta = new Date()
-    dateDelta.setDate(dateDelta.getDate() - 3)
+    dateDelta.setDate(dateDelta.getDate() - 7)
     return await db.select({
         blogId: blogPosts.blog_id,
         postUuid: blogPosts.post_uuid,
@@ -166,7 +172,7 @@ export const createUserPostEntry = async (userId: number, postId: number) => {
 }
 
 
-export const fetchTodaysUsersToNotify = async () => {
+export const fetchUsersToNotify = async () => {
     const newPosts = await fetchNewPosts()
 
     // Map of userUuids to postUuids
@@ -210,9 +216,9 @@ export const fetchTodaysUsersToNotify = async () => {
 }
 
 
-// fetchTodaysUsersToNotify().then((users) => {
-//     console.log(users)
-// })
+fetchUsersToNotify().then((users) => {
+    console.log(users)
+})
 
 // fetchAllPostsForUser({ userEmail: "haffimazhar96@gmail.com", offset: 0, limit: 10 }).then((posts) => {
 //     console.log(posts)

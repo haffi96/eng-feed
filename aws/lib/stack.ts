@@ -112,7 +112,7 @@ export class TestStack extends cdk.Stack {
         api.addIntegration("POST", "/subscribe", addUserSubscriptionLambda)
 
         // Create an SQS event source for NotifyUsers Lambda to process messages from the queue
-        const eventSource = new lambdaEventSources.SqsEventSource(queue, { batchSize: 1 })
+        const eventSource = new lambdaEventSources.SqsEventSource(queue)
         sendEmailLambda.addEventSource(eventSource)
 
 

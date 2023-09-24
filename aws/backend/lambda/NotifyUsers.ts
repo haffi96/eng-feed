@@ -1,6 +1,5 @@
-import { fetchTodaysUsersToNotify } from "../db/query"
+import { fetchUsersToNotify } from "../db/query"
 import { SQSClient, SendMessageBatchCommand, SendMessageBatchCommandInput } from "@aws-sdk/client-sqs"
-// import * as cdk from "aws-cdk-lib/core"
 import { v4 as uuidv4 } from "uuid"
 
 // SQS Confiig
@@ -8,7 +7,7 @@ const sqsClient = new SQSClient({ region: "eu-west-2" })
 
 export const handler = async () => {
     try {
-        const user_posts = await fetchTodaysUsersToNotify()
+        const user_posts = await fetchUsersToNotify()
         const obj = Object.fromEntries(user_posts)
 
         const messageId = uuidv4()
@@ -17,7 +16,7 @@ export const handler = async () => {
             QueueUrl: process.env.SQS_QUEUE_URL,
             Entries: Object.entries(obj).map((entry) => ({
                 Id: messageId,
-                MessageBody: JSON.stringify(entry),
+                MessageBody: JSON.stringify({ userId: entry[0], postsIds: entry[1] }),
                 DelaySeconds: 0,
                 MessageAttributes: {
                     key: {
