@@ -14,6 +14,7 @@ jobs:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       ENV: dev
       SQS_QUEUE_URL: ${{ secrets.SQS_QUEUE_URL }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
     steps:
       - name: Check out code
         uses: actions/checkout@v4
