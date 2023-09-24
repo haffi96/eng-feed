@@ -21,7 +21,7 @@ export const handler = async (event: SQSEvent): Promise<APIGatewayProxyResult> =
             "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
         },
         body: JSON.stringify({
-            from: "haffimazhar96@gmail.com",
+            from: "latest@devfeed.blog",
             to: ["haffimazhar96@gmail.com"],
             subject: "Latest Engineering Blogs",
             html: "<p>Congrats on sending your <strong>first email</strong>!</p>",
