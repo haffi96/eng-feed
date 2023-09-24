@@ -1,6 +1,8 @@
 import { APIGatewayProxyResult, SQSEvent } from "aws-lambda"
 
 export const handler = async (event: SQSEvent): Promise<APIGatewayProxyResult> => {
+    console.log(event);
+
     try {
         // fetch is available with Node.js 18
         return {
