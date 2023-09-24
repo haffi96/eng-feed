@@ -21,6 +21,7 @@ export class GenericLambda extends NodejsFunction {
                 DATABASE_URL: process.env.DATABASE_URL as string,
                 ENV: process.env.ENV as string,
                 SQS_QUEUE_URL: process.env.SQS_QUEUE_URL as string,
+                RESEND_API_KEY: process.env.RESEND_API_KEY as string,
             }
         })
     }

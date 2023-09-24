@@ -1,31 +1,43 @@
 import { APIGatewayProxyResult, SQSEvent } from "aws-lambda"
-import { fetchuEmailserByUuid, fetchPostById } from "../db/query"
+import { fetchUserEmailByUuid, fetchPostsByUuids } from "../db/query"
 
 export const handler = async (event: SQSEvent): Promise<APIGatewayProxyResult> => {
     const eventBody = event.Records[0].body
 
-    // const eventBodyJson = JSON.parse(eventBody)
-    const user = eventBody[0]
+    const eventBodyJson = JSON.parse(eventBody)
 
-    const posts = eventBody[1]
-
-    console.log(user)
-    const userEmail = await fetchuEmailserByUuid(user)
+    const userEmail = await fetchUserEmailByUuid(eventBodyJson.userId)
+    const postIds = eventBodyJson.postsIds as string[]
     console.log(userEmail)
-    console.log(posts)
 
-    // posts.forEach(async (post: string) => {
-    //     const postRecord = await fetchPostById(post)
-    //     console.log(postRecord)
-    // }
-    // )
+    const postRecords = await fetchPostsByUuids(postIds)
+
+    console.log(postRecords)
+
+    const res = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
+        },
+        body: JSON.stringify({
+            from: "haffimazhar96@gmail.com",
+            to: ["haffimazhar96@gmail.com"],
+            subject: "Latest Engineering Blogs",
+            html: "<p>Congrats on sending your <strong>first email</strong>!</p>",
+        }),
+    })
+
+    console.log(res.status)
+    console.log(res.text())
+
 
     try {
         // fetch is available with Node.js 18
         return {
             statusCode: 200,
             body: JSON.stringify({
-                message: event,
+                message: postRecords,
             }),
         }
     } catch (err) {

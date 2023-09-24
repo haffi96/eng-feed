@@ -16,7 +16,7 @@ export const fetchUserById = async (userId: number) => {
     return await db.select({ userUuid: users.user_uuid }).from(users).where(eq(users.id, userId))
 }
 
-export const fetchuEmailserByUuid = async (userUuid: string) => {
+export const fetchUserEmailByUuid = async (userUuid: string) => {
     const result = await db.select({ userEmail: users.email }).from(users).where(eq(users.user_uuid, userUuid))
     const { userEmail } = result[0]
     return userEmail
@@ -122,6 +122,10 @@ export const fetchPostById = async (postId: number) => {
     return await db.select().from(blogPosts).where(eq(blogPosts.id, postId))
 }
 
+export const fetchPostsByUuids = async (postUuid: string[]) => {
+    return await db.select().from(blogPosts).where(sql`${blogPosts.post_uuid} IN ${postUuid}`)
+}
+
 // UserBlogs table
 interface QueryAllPostsParams {
     userEmail: string;
@@ -216,9 +220,9 @@ export const fetchUsersToNotify = async () => {
 }
 
 
-fetchUsersToNotify().then((users) => {
-    console.log(users)
-})
+// fetchUsersToNotify().then((users) => {
+//     console.log(users)
+// })
 
 // fetchAllPostsForUser({ userEmail: "haffimazhar96@gmail.com", offset: 0, limit: 10 }).then((posts) => {
 //     console.log(posts)
@@ -256,3 +260,20 @@ fetchUsersToNotify().then((users) => {
 // createUserBlogEntry("new@test.com", 1).then((res) => {
 //     console.log(res)
 // })
+
+
+// const postIds = [
+//     "9ede43eb-23ff-4d48-8d8e-2b398591b1ef",
+//     "b649a807-136e-4aa1-b4d0-38595b5ac5db",
+//     "6ab7a7c4-d2a6-4a23-a4b4-216e35ab5076",
+//     "08e312a6-6fab-4c36-9033-f7b23a20ac4c",
+//     "b55612d8-58df-47d3-b660-5a7666683a12",
+//     "212d630e-31a7-4b31-b6af-f99d31542c42",
+//     "52c8d0c7-7939-40d0-87ed-234e5a272ae9"
+// ]
+
+
+// fetchPostsByUuids(postIds).then((res) => {
+//     console.log(res)
+// })
+

@@ -3,14 +3,18 @@
         {
             "messageId": "19dd0b57-b21e-4ac1-bd88-01bbb068cb78",
             "receiptHandle": "MessageReceiptHandle",
-            "body": [
-                "5c41c714-1d6b-43a6-8425-b6b2557f7dc8",
-                [
+            "body": '{
+                "userId": "5c41c714-1d6b-43a6-8425-b6b2557f7dc8",
+                "postsIds": [
+                    "9ede43eb-23ff-4d48-8d8e-2b398591b1ef",
+                    "b649a807-136e-4aa1-b4d0-38595b5ac5db",
                     "6ab7a7c4-d2a6-4a23-a4b4-216e35ab5076",
                     "08e312a6-6fab-4c36-9033-f7b23a20ac4c",
-                    "212d630e-31a7-4b31-b6af-f99d31542c42"
+                    "b55612d8-58df-47d3-b660-5a7666683a12",
+                    "212d630e-31a7-4b31-b6af-f99d31542c42",
+                    "52c8d0c7-7939-40d0-87ed-234e5a272ae9"
                 ]
-            ],
+            }',
             "attributes": {
                 "ApproximateReceiveCount": "1",
                 "SentTimestamp": "1523232000000",
