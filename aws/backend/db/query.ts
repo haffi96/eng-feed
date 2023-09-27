@@ -123,7 +123,20 @@ export const fetchPostById = async (postId: number) => {
 }
 
 export const fetchPostsByUuids = async (postUuid: string[]) => {
-    return await db.select().from(blogPosts).where(sql`${blogPosts.post_uuid} IN ${postUuid}`)
+    return await db.select({
+        postId: blogPosts.id,
+        postUuid: blogPosts.post_uuid,
+        title: blogPosts.title,
+        link: blogPosts.link,
+        author: blogPosts.author,
+        publishedDate: blogPosts.publishedDate,
+        blogId: blogPosts.blog_id,
+        companyName: allBlogs.companyName,
+    })
+        .from(blogPosts)
+        .innerJoin(allBlogs, eq(allBlogs.id, blogPosts.blog_id))
+        .orderBy(desc(blogPosts.publishedDate))
+        .where(sql`${blogPosts.post_uuid} IN ${postUuid}`)
 }
 
 // UserBlogs table

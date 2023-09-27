@@ -1,0 +1,20 @@
+---
+const { prevPage, nextPage } = Astro.props;
+---
+
+<div class="flex justify-center">
+    <div class="flex flex-row space-x-1">
+        <a
+            href=`/posts/${prevPage}`
+            class="hover:bg-zinc-600 shadow-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100"
+        >
+            Prev
+        </a>
+        <a
+            href=`/posts/${nextPage}`
+            class="hover:bg-zinc-600 shadow-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100"
+        >
+            Next
+        </a>
+    </div>
+</div>

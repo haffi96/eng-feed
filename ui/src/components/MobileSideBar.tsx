@@ -1,15 +1,18 @@
 import { useState } from "preact/hooks";
 import SideBarItems from "./SideBarItems.tsx";
 import type { Subscription } from "../types";
-import ThemeToggle from "./ThemeToggle.tsx";
+import type { Session } from "@auth/core/types";
+import { signOut } from "auth-astro/client";
 
 interface Props {
+    session: Session | null;
     userEmail?: string;
     apiUrl: string;
     subs: Subscription[];
 }
 
-const Sidebar = ({ userEmail, apiUrl, subs }: Props) => {
+const Sidebar = ({ session, userEmail, apiUrl, subs }: Props) => {
+
     const [showSidebar, setShowSidebar] = useState(false);
 
     return (
@@ -18,6 +21,7 @@ const Sidebar = ({ userEmail, apiUrl, subs }: Props) => {
                 {showSidebar ? (
                     <div>
                         <div
+                            onClick={() => setShowSidebar(!showSidebar)}
                             className="w-full h-full bg-zinc-500 dark:bg-zinc-700 fixed z-20 opacity-50"
                         />
                         <button
@@ -47,6 +51,24 @@ const Sidebar = ({ userEmail, apiUrl, subs }: Props) => {
                             ease-in-out duration-300 ${showSidebar ? "translate-x-0 " : "translate-x-full"}
                             overflow-y-scroll`}
             >
+                <div class="text-center mt-10" >
+                    {
+                        session ? (
+                            <button
+                                onClick={() => signOut()}
+                                class="hover:bg-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100">
+                                Sign out
+                            </button>
+                        ) : (
+                            <a
+                                class="hover:bg-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100"
+                                href="/login"
+                            >
+                                Sign in
+                            </a>
+                        )
+                    }
+                </div>
                 <SideBarItems
                     userEmail={userEmail}
                     apiUrl={apiUrl}
