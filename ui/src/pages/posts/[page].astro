@@ -72,7 +72,9 @@ const nextPage = posts.length > 1 ? pageNumber + 1 : pageNumber;
             <div>
                 <h1 class="text-xl font-extrabold p-2">Latest posts</h1>
             </div>
-            <PageNavButtons prevPage={prevPage} nextPage={nextPage} />
+            <div class="mt-5">
+                <PageNavButtons prevPage={prevPage} nextPage={nextPage} />
+            </div>
             {
                 posts.length > 1 ? (
                     posts.map((p: any) => {
@@ -83,6 +85,8 @@ const nextPage = posts.length > 1 ? pageNumber + 1 : pageNumber;
                 )
             }
         </div>
-        <PageNavButtons prevPage={prevPage} nextPage={nextPage} />
+        <div class="p-5 mb-5">
+            <PageNavButtons prevPage={prevPage} nextPage={nextPage} />
+        </div>
     </main>
 </Layout>
