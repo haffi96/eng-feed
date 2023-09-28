@@ -77,14 +77,14 @@ export class TestStack extends cdk.Stack {
         // Lambda function to be scheduled for fetching new posts and inserting to db
         const fetchPostsLambda = new GenericLambda(this, "FetchAndInsertPosts")
         const fetchPostsRule = new events.Rule(this, "PostsRule", {
-            schedule: events.Schedule.cron({ minute: "0", hour: "8" }), // Adjust the schedule as needed
+            schedule: events.Schedule.cron({ minute: "0", hour: "8" }),
         })
         fetchPostsRule.addTarget(new targets.LambdaFunction(fetchPostsLambda))
 
         // Lambda function to notify users
         const fetchUserToNotify = new GenericLambda(this, "NotifyUsers")
         const fetchUserToNotifyRule = new events.Rule(this, "fetchUserToNotifyRule", {
-            schedule: events.Schedule.cron({ minute: "0", hour: "9" }), // Adjust the schedule as needed
+            schedule: events.Schedule.cron({ minute: "0", hour: "9", weekDay: "FRI" }),
         })
         fetchUserToNotifyRule.addTarget(new targets.LambdaFunction(fetchUserToNotify))
 

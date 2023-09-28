@@ -1,7 +1,7 @@
 import { db } from "./session"
 import { allBlogs, blogPosts, userBlogs, userPosts, users } from "./schema"
 import { eq, desc, sql, gt } from "drizzle-orm"
-
+import { settings } from "../../settings"
 
 export type newBlogEntry = typeof allBlogs.$inferInsert;
 export type blogEntry = typeof allBlogs.$inferSelect;
@@ -108,7 +108,7 @@ export const createBlogPostEntry = async (newBlogPostParams: newBlogPostEntry) =
 
 export const fetchNewPosts = async () => {
     const dateDelta = new Date()
-    dateDelta.setDate(dateDelta.getDate() - 7)
+    dateDelta.setDate(dateDelta.getDate() - settings.PUBLISHED_DELTA)
     return await db.select({
         blogId: blogPosts.blog_id,
         postUuid: blogPosts.post_uuid,
@@ -218,6 +218,7 @@ export const fetchUsersToNotify = async () => {
 
         newPosts.find((post) => {
             if (post.blogId === user.blogId) {
+                // TODO: Only create a new user post entry if not already exists
                 createUserPostEntry(user.userId!, post.postId!)
                     .then()
                     .catch((err) => {
