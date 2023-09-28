@@ -4,24 +4,44 @@ import ThemeButton from "@components/ThemeToggle";
 import { ViewTransitions } from "astro:transitions";
 ---
 
-<html>
+<!doctype html>
+<html lang="en">
     <head>
+        <meta charset="UTF-8" />
+        <meta name="description" content="Astro description" />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="generator" content={Astro.generator} />
         <ViewTransitions />
         <title>Log in</title>
     </head>
-    <body class="bg-zinc-100 dark:bg-zinc-800 dark:text-zinc-300">
+    <body
+        class="bg-zinc-100 dark:bg-zinc-800 dark:text-zinc-300 justify-center items-center flex flex-col h-screen"
+    >
         <div class="text-center">
             <ThemeButton client:only />
         </div>
         <div
-            class="flex flex-col w-full h-full font-mono justify-center items-center my-20"
+            class="flex flex-col w-full h-full font-mono justify-center items-center space-y-4"
         >
             <SignIn
-                class="flex flex-row bg-[#4285F4] font-roboto items-center text-white"
+                class="flex flex-row bg-[#4285F4] font-roboto items-center text-white p-1 rounded-md"
                 provider="google"
             >
                 <img src="/googleLogo.svg" alt="google-official-logo" />
                 <p class="p-2">Sign in with Google</p>
+            </SignIn>
+            <SignIn
+                class="flex flex-row bg-zinc-500 font-roboto items-center text-white px-3.5 py-1.5 rounded-md"
+                provider="github"
+            >
+                <img
+                    width="30px"
+                    height="30px"
+                    src="/github-mark.png"
+                    alt="github-official-logo"
+                />
+                <p class="p-2">Sign in with Github</p>
             </SignIn>
         </div>
     </body>
