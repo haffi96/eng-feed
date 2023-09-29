@@ -3,11 +3,10 @@ import type { Subscription } from "@/types";
 
 interface Props {
     userEmail?: string;
-    apiUrl: string;
     subs: Subscription[];
 }
 
-const SideBarItems = ({ userEmail, apiUrl, subs }: Props) => {
+const SideBarItems = ({ userEmail, subs }: Props) => {
     return (
         <div class="w-7/8 lg:w-5/6 m-auto space-y-5 mt-10">
             <a
@@ -27,7 +26,6 @@ const SideBarItems = ({ userEmail, apiUrl, subs }: Props) => {
                     >
                     <AllSubscriptionsList
                         userEmail={userEmail}
-                        apiUrl={apiUrl}
                         subs={subs}
                     />
                 </details>

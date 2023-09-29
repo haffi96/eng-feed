@@ -103,6 +103,7 @@ export class TestStack extends cdk.Stack {
         const getSubscribedBlogsLambda = new GenericLambda(this, "GetSubscribedBlogs")
         const upsertUserLambda = new GenericLambda(this, "upsertUser")
         const addUserSubscriptionLambda = new GenericLambda(this, "addUserSubscription")
+        const removeUserSubscriptionLambda = new GenericLambda(this, "removeUserSubscription")
 
 
         // API Routes
@@ -110,6 +111,7 @@ export class TestStack extends cdk.Stack {
         api.addIntegration("GET", "/subscribed-blogs", getSubscribedBlogsLambda)
         api.addIntegration("POST", "/user", upsertUserLambda)
         api.addIntegration("POST", "/subscribe", addUserSubscriptionLambda)
+        api.addIntegration("POST", "/unsubscribe", removeUserSubscriptionLambda)
 
         // Create an SQS event source for NotifyUsers Lambda to process messages from the queue
         const eventSource = new lambdaEventSources.SqsEventSource(queue)

@@ -1,6 +1,6 @@
 import { db } from "./session"
 import { allBlogs, blogPosts, userBlogs, userPosts, users } from "./schema"
-import { eq, desc, sql, gt } from "drizzle-orm"
+import { eq, desc, sql, gt, and } from "drizzle-orm"
 import { settings } from "../../settings"
 
 export type newBlogEntry = typeof allBlogs.$inferInsert;
@@ -183,6 +183,19 @@ export const createUserBlogEntry = async (userEmail: string, blogId: number) => 
     await db.insert(userBlogs).values({ user_id: userId, blog_id: blogId })
 }
 
+export const deleteUserBlogEntry = async (userEmail: string, blogId: number) => {
+    const userQuery = db.select({ userId: users.id }).from(users).where(eq(users.email, userEmail)).as("userQuery")
+
+    const result = await db.select({ userId: userQuery.userId }).from(userQuery)
+
+    const { userId } = result[0]
+
+    const deleted = await db.delete(userBlogs).where(and(eq(userBlogs.user_id, userId), eq(userBlogs.blog_id, blogId)))
+
+    return deleted.rowCount
+
+}
+
 // UserPosts table
 export const createUserPostEntry = async (userId: number, postId: number) => {
     return await db.insert(userPosts).values({ user_id: userId, post_id: postId })
@@ -291,3 +304,8 @@ export const fetchUsersToNotify = async () => {
 //     console.log(res)
 // })
 
+
+
+// deleteUserBlogEntry("haffimazhar96@gmail.com", 24).then((res) => {
+//     console.log(res)
+// })

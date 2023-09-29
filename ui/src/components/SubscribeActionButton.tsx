@@ -2,23 +2,32 @@ import { useState } from "preact/hooks";
 import type { Subscription } from "../types";
 
 interface SubscribedBlogItemProps {
-    apiUrl: string;
     userEmail?: string;
     sub: Subscription;
     removeSubAction: (blogId: number) => void;
 }
 
-export default function SubscribeActionButton({ apiUrl, userEmail, sub, removeSubAction }: SubscribedBlogItemProps) {
+export default function SubscribeActionButton({ userEmail, sub, removeSubAction }: SubscribedBlogItemProps) {
     const [unSubTrigger, setUnSubTrigger] = useState<boolean>(false);
 
-    const unSub = (blogId: number) => {
-        console.log("Unsubscribing from blogId: ", blogId);
+    async function unSub(blogId: number) {
+        const resp = await fetch(`/api/removeSub`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                userEmail,
+                blogId
+            }),
+        });
+        console.log(resp.status);
         removeSubAction(blogId)
         setUnSubTrigger(false);
         window.location.reload();
     }
 
-    const unSubRequest = (blogId: number) => {
+    const unSubRequest = () => {
         setUnSubTrigger(true);
     }
 
@@ -45,8 +54,8 @@ export default function SubscribeActionButton({ apiUrl, userEmail, sub, removeSu
     const LoggedOutSubscribeButton = () => {
         return (
             <button
-                class="hover:bg-green-400 rounded-xl"
-                onClick={() => redirectToLogin()}
+                class="hover:bg-green-400 focus:bg-green-400 rounded-full"
+                onClick={redirectToLogin}
             >
                 <img src={iconRef} alt="Subscribe" />
             </button>
@@ -56,8 +65,8 @@ export default function SubscribeActionButton({ apiUrl, userEmail, sub, removeSu
     const LoggedInRemoveSubscriptionButton = () => {
         return (
             <button
-                class="hover:bg-red-400 rounded-xl"
-                onClick={() => unSubRequest(sub.blogId)}
+                class="hover:bg-red-400 focus:bg-red-400 rounded-full"
+                onClick={unSubRequest}
             >
                 <img src={iconRef} alt="Unsubscribe" />
             </button>
@@ -67,7 +76,7 @@ export default function SubscribeActionButton({ apiUrl, userEmail, sub, removeSu
     const LoggedInAddSubscriptionButton = () => {
         return (
             <button
-                class="hover:bg-green-400 rounded-xl"
+                class="hover:bg-green-400 focus:bg-green-400 rounded-full"
                 onClick={() => addSubscriptionForUser(sub.blogId)}
             >
                 <img src={iconRef} alt="Subscribe" />

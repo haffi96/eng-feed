@@ -73,7 +73,14 @@ const nextPage = posts.length > 1 ? pageNumber + 1 : pageNumber;
                 <h1 class="text-xl font-extrabold p-2">Latest posts</h1>
             </div>
             <div class="mt-5">
-                <PageNavButtons prevPage={prevPage} nextPage={nextPage} />
+                {
+                    posts.length > 1 && (
+                        <PageNavButtons
+                            prevPage={prevPage}
+                            nextPage={nextPage}
+                        />
+                    )
+                }
             </div>
             {
                 posts.length > 1 ? (
@@ -81,12 +88,16 @@ const nextPage = posts.length > 1 ? pageNumber + 1 : pageNumber;
                         return <BlogView blog={p} />;
                     })
                 ) : (
-                    <div class="text-lg p-10">No more posts...</div>
+                    <div class="text-lg p-10">No posts to show...</div>
                 )
             }
         </div>
         <div class="p-5 mb-5">
-            <PageNavButtons prevPage={prevPage} nextPage={nextPage} />
+            {
+                posts.length > 1 && (
+                    <PageNavButtons prevPage={prevPage} nextPage={nextPage} />
+                )
+            }
         </div>
     </main>
 </Layout>

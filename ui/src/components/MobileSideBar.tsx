@@ -12,7 +12,7 @@ interface Props {
     subs: Subscription[];
 }
 
-const Sidebar = ({ session, userEmail, apiUrl, subs }: Props) => {
+const Sidebar = ({ session, userEmail, subs }: Props) => {
 
     const [showSidebar, setShowSidebar] = useState(false);
 
@@ -75,7 +75,6 @@ const Sidebar = ({ session, userEmail, apiUrl, subs }: Props) => {
                 </div>
                 <SideBarItems
                     userEmail={userEmail}
-                    apiUrl={apiUrl}
                     subs={subs}
                 />
             </div >

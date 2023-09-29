@@ -197,6 +197,13 @@ export const fetchAndInsertBlogPosts = async (limit?: number) => {
 
                             const titleHash = createChecksum(title)
 
+                            // FIXME: Add query to check if title hash already exists
+                            // if it does, skip this entry
+
+                            // FIXME: This should only create a new entry
+                            // for posts published after the previous run
+                            // of this lambda.
+                            // This lambda is schedule to run every morning 8am UTC
                             await createBlogPostEntry({
                                 title,
                                 link,

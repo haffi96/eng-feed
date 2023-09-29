@@ -4,11 +4,10 @@ import SubscribeActionButton from "@components/SubscribeActionButton";
 
 interface SubscribedBlogItemProps {
     userEmail?: string;
-    apiUrl: string;
     subs: Subscription[];
 }
 
-export default function AllSubscriptionsList({ userEmail, apiUrl, subs }: SubscribedBlogItemProps) {
+export default function AllSubscriptionsList({ userEmail, subs }: SubscribedBlogItemProps) {
     const [subscribedBlogs, setSubscribedBlogs] = useState<Subscription[]>(subs);
 
     const removeSubAction = (blogId: number) => {
@@ -29,7 +28,6 @@ export default function AllSubscriptionsList({ userEmail, apiUrl, subs }: Subscr
                             </a>
                             <div>
                                 <SubscribeActionButton
-                                    apiUrl={apiUrl}
                                     userEmail={userEmail}
                                     sub={sub}
                                     removeSubAction={removeSubAction}
