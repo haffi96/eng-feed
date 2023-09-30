@@ -8,11 +8,15 @@ import * as sns from "aws-cdk-lib/aws-sns"
 import * as snsSubscriptions from "aws-cdk-lib/aws-sns-subscriptions"
 import * as events from "aws-cdk-lib/aws-events"
 import * as targets from "aws-cdk-lib/aws-events-targets"
+import * as s3 from "aws-cdk-lib/aws-s3"
+import * as s3Deployment from "aws-cdk-lib/aws-s3-deployment"
+import * as iam from "aws-cdk-lib/aws-iam"
 // import { Secret } from "aws-cdk-lib/aws-secretsmanager"
 import * as lambdaEventSources from "aws-cdk-lib/aws-lambda-event-sources"
 import { GenericLambda } from "./lambda"
 import { ApiGateway } from "./apiGateway"
 import { CfnOutput } from "aws-cdk-lib"
+import path = require("path")
 
 export class TestStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -117,6 +121,41 @@ export class TestStack extends cdk.Stack {
         const eventSource = new lambdaEventSources.SqsEventSource(queue)
         sendEmailLambda.addEventSource(eventSource)
 
+
+        // s3 bucket for storing assets
+        const assetsBucket = new s3.Bucket(this, "AssetsBucket", {
+            removalPolicy: cdk.RemovalPolicy.DESTROY, // Remove the bucket when the CDK app is destroyed (for testing purposes)
+            versioned: true, // Set to true if you want versioning
+            objectOwnership: s3.ObjectOwnership.OBJECT_WRITER,
+            blockPublicAccess: new s3.BlockPublicAccess({
+                blockPublicAcls: false,
+                ignorePublicAcls: false,
+                blockPublicPolicy: false,
+                restrictPublicBuckets: false,
+            })
+        })
+
+        // Define the bucket policy
+        const assetsBucketPolicy = new s3.BucketPolicy(this, "MyBucketPolicy", {
+            bucket: assetsBucket,
+        })
+
+        // Allow public read access to all objects in the bucket
+        assetsBucketPolicy.document.addStatements(
+            new iam.PolicyStatement({
+                sid: "PublicReadGetObject",
+                effect: iam.Effect.ALLOW,
+                actions: ["s3:GetObject"],
+                resources: [assetsBucket.arnForObjects("*")],
+                principals: [new iam.AnyPrincipal()],
+            }),
+        )
+
+        // Specify assets to deploy to the bucket
+        new s3Deployment.BucketDeployment(this, "DeployAssets", {
+            sources: [s3Deployment.Source.asset(path.join(__dirname, "../assets"))],
+            destinationBucket: assetsBucket,
+        })
 
         // Export values
         new CfnOutput(this, "SQSQueueUrl", {

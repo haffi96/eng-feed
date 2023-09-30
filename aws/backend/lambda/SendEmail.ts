@@ -78,15 +78,17 @@ export const handler = async (event: SQSEvent): Promise<APIGatewayProxyResult> =
             </style>
             <head></head>
             <body>
-                <div style="text-align: center;">
-                    <h2>Latest Engineering Blogs</h2>
+            <div style="text-align: center;">
+                <h2>Latest Engineering Blogs</h2>
+                <div style="border-radius: 25%; overflow: hidden; width: 100px; height: 100px; margin: 10px; margin: 0 auto;">
+                    <img src="https://www.devfeed.blog/logo.png" alt="DevFeed Logo" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 </div>
                 ${blogPostHTML}
                 ${seeMoreButtonHTML}
             </body>
         </html>
     `
-
 
     await fetch("https://api.resend.com/emails", {
         method: "POST",
