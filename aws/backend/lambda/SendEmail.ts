@@ -40,21 +40,16 @@ export const handler = async (event: SQSEvent): Promise<APIGatewayProxyResult> =
         `
     }).join("") // Join all the limited blog post HTML content together
 
-    // Check if there are more than 5 posts
-    const hasMorePosts = postRecords.length > maxPosts
-
     // Create the "See more posts from this week" button
-    const seeMoreButtonHTML = hasMorePosts
-        ? `
+    const seeMoreButtonHTML = `
             <div style="text-align: center;">
-                <a href="URL_TO_MORE_POSTS" style="text-decoration: none;">
+                <a href="https://www.devfeed.blog" style="text-decoration: none;">
                     <button style="background-color: #007BFF; color: white; border: none; padding: 10px; cursor: pointer;">
-                        See more posts from this week ->
+                        See more posts ->
                     </button>
                 </a>
             </div>
           `
-        : ""
 
     const emailHtml = `
         <html>
@@ -77,11 +72,13 @@ export const handler = async (event: SQSEvent): Promise<APIGatewayProxyResult> =
                 }
             </style>
             <head></head>
-            <body>
+            <body style="height: auto;">
             <div style="text-align: center;">
                 <h2>Latest Engineering Blogs</h2>
                 <div style="border-radius: 25%; overflow: hidden; width: 100px; height: 100px; margin: 10px; margin: 0 auto;">
-                    <img src="https://www.devfeed.blog/logo.png" alt="DevFeed Logo" style="width: 100%; height: 100%; object-fit: cover;">
+                    <a href="https://www.devfeed.blog">
+                        <img src="https://www.devfeed.blog/logo.png" alt="DevFeed Logo" style="width: 100%; height: 100%; object-fit: cover;">
+                    </a>
                 </div>
                 </div>
                 ${blogPostHTML}
