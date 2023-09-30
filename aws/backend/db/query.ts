@@ -201,6 +201,26 @@ export const createUserPostEntry = async (userId: number, postId: number) => {
     return await db.insert(userPosts).values({ user_id: userId, post_id: postId })
 }
 
+export const updateUserPostEntry = async (userUuid: string, postUuids: string[]) => {
+    const userPostsToUpdate = await db
+        .select({ userPostIds: userPosts.id })
+        .from(userPosts)
+        .innerJoin(users, eq(users.id, userPosts.user_id))
+        .innerJoin(blogPosts, eq(blogPosts.id, userPosts.post_id))
+        .where(
+            and(
+                eq(users.user_uuid, userUuid),
+                sql`${blogPosts.post_uuid} IN ${postUuids}`
+            )
+        )
+
+    await db
+        .update(userPosts)
+        .set({ emailed: true })
+        .where(sql`${userPosts.id} IN ${userPostsToUpdate.map((post) => post.userPostIds)}`)
+
+}
+
 
 export const fetchUsersToNotify = async () => {
     const newPosts = await fetchNewPosts()

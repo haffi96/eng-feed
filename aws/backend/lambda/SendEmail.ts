@@ -1,5 +1,5 @@
 import { APIGatewayProxyResult, SQSEvent } from "aws-lambda"
-import { fetchUserEmailByUuid, fetchPostsByUuids } from "../db/query"
+import { fetchUserEmailByUuid, fetchPostsByUuids, updateUserPostEntry } from "../db/query"
 
 export const handler = async (event: SQSEvent): Promise<APIGatewayProxyResult> => {
 
@@ -90,7 +90,7 @@ export const handler = async (event: SQSEvent): Promise<APIGatewayProxyResult> =
         </html>
     `
 
-    await fetch("https://api.resend.com/emails", {
+    const res = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -103,6 +103,10 @@ export const handler = async (event: SQSEvent): Promise<APIGatewayProxyResult> =
             html: emailHtml,
         }),
     })
+
+    if (res.ok) {
+        await updateUserPostEntry(eventBodyJson.userId, postIds)
+    }
 
     try {
         // fetch is available with Node.js 18

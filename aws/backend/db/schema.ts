@@ -68,5 +68,4 @@ export const userPosts = pgTable("user_posts", {
         .notNull()
         .default(utcTimestampSql),
     updatedAt: timestamp("updated_at"),
-
 })
