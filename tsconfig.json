@@ -18,6 +18,9 @@
             ]
         },
         "jsx": "react-jsx",
-        "jsxImportSource": "preact"
-    }
+        "jsxImportSource": "preact",
+    },
+    "exclude": [
+        "aws"
+    ]
 }
