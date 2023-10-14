@@ -16,5 +16,12 @@ export default defineConfig({
     },
     integrations: [tailwind(), preact({
         compat: true
-    }), auth()]
+    }), auth()],
+    vite: {
+        rollupOptions: {
+            external: [
+                './aws/**/*'
+            ]
+        }
+    }
 });
