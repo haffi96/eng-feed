@@ -151,6 +151,7 @@ function createChecksum(inputString: string, algorithm: string = "sha256"): stri
 
 
 export const fetchAndInsertBlogPosts = async (limit?: number) => {
+
     const parsedItems = new Map<string, BlogPostEntry>()
 
     for (const companyName of companyBlogLinkMap.keys()) {

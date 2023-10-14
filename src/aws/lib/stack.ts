@@ -19,15 +19,15 @@ const __filename = fileURLToPath(import.meta.url); // get the resolved path to t
 const __dirname = dirname(__filename); // get the name of the directory
 
 
-export class TestStack extends cdk.Stack {
+export class DevFeedStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props)
 
         // Create an SQS Queue
-        const queue = new sqs.Queue(this, "test-sqs-queue")
+        const queue = new sqs.Queue(this, "notifications-sqs-queue")
 
         // Create an SNS Topic
-        const snsTopic = new sns.Topic(this, "test-sns-topic")
+        const snsTopic = new sns.Topic(this, "notifications-sns-topic")
 
         // Lambda function to be scheduled for fetching new posts and inserting to db
         const fetchPostsLambda = new GenericLambda(this, "FetchAndInsertPosts")
