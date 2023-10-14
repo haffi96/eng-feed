@@ -1,3 +1,4 @@
+// FIXME: Remove this, will call directly from ui
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda"
 import { fetchUserBlogsWithSubscriptionStatus, fetchAllBlogs } from "../db/query"
 

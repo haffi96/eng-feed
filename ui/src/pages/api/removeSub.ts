@@ -1,26 +1,20 @@
 import type { APIRoute } from "astro"
-
-const { API_URL } = import.meta.env;
+import { deleteUserBlogEntry } from "../../../../aws/backend/db/query"
 
 export const POST: APIRoute = async ({ request }) => {
     const reqBody = await request.json();
 
     const { userEmail, blogId } = reqBody;
 
-    fetch(`${API_URL}/unsubscribe`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            email: userEmail,
-            blogId
+    try {
+        await deleteUserBlogEntry(userEmail, blogId);
+    } catch (err) {
+        console.log(err);
+        return new Response(JSON.stringify({
+            message: "some error happened"
         })
-    })
-        .then()
-        .catch((err) => {
-            console.log(err);
-        })
+        )
+    }
 
     return new Response(JSON.stringify({
         message: "Unsubscribed"

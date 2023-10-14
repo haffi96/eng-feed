@@ -1,9 +1,9 @@
 import AllSubscriptionsList from "./allSubscriptions";
-import type { Subscription } from "@/types";
+import type { UserSubscription } from "@/types";
 
 interface Props {
     userEmail?: string;
-    subs: Subscription[];
+    subs: UserSubscription[];
 }
 
 const SideBarItems = ({ userEmail, subs }: Props) => {

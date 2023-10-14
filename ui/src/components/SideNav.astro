@@ -3,29 +3,23 @@ export const prerender = true;
 
 import Sidebar from "./SideBar.astro";
 import MobileSideBar from "./MobileSideBar.tsx";
-import type { Subscription } from "../types";
+import type { UserSubscription } from "../types";
 import { getSession } from "auth-astro/server";
+import {
+    fetchUserBlogsWithSubscriptionStatus,
+    fetchAllBlogs,
+} from "../../../aws/backend/db/query";
 
 const session = await getSession(Astro.request);
-const userEmail = session?.user?.email || undefined;
-
-const API_URL = import.meta.env.API_URL;
+const userEmail = session?.user?.email ? session.user.email : "";
 
 async function fetchBlogs() {
-    const baseUrl = userEmail
-        ? `${API_URL}/subscribed-blogs?userEmail=${userEmail}`
-        : `${API_URL}/subscribed-blogs`;
-
-    const res = await fetch(baseUrl, {
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
-
-    return await res.json();
+    return userEmail !== ""
+        ? await fetchUserBlogsWithSubscriptionStatus(userEmail)
+        : await fetchAllBlogs();
 }
 
-const subs: Subscription[] = await fetchBlogs();
+const subs = (await fetchBlogs()) as UserSubscription[];
 
 // Sort by subscribed
 subs.sort((a, b) =>
@@ -43,17 +37,11 @@ subs.push(comingSoonEntry);
 ---
 
 <div class="dark:text-black">
-    <Sidebar
-        session={session}
-        userEmail={userEmail}
-        apiUrl={API_URL}
-        subs={subs}
-    />
+    <Sidebar session={session} userEmail={userEmail} subs={subs} />
     <MobileSideBar
         client:load
         session={session}
         userEmail={userEmail}
-        apiUrl={API_URL}
         subs={subs}
     />
 </div>

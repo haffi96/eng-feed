@@ -9,9 +9,10 @@ export interface Post {
     companyName: string;
 }
 
-export interface Subscription {
+
+export interface UserSubscription {
     blogId: number;
     blogLink: string;
     companyName: string;
-    subscribed: boolean;
+    subscribed?: boolean;
 }

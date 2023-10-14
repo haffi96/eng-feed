@@ -1,6 +1,6 @@
 import { useState } from "preact/hooks";
 import SideBarItems from "./SideBarItems.tsx";
-import type { Subscription } from "../types";
+import type { UserSubscription } from "../types";
 import type { Session } from "@auth/core/types";
 import { signOut } from "auth-astro/client";
 import ProfileImage from "./ProfileImage.tsx";
@@ -8,8 +8,7 @@ import ProfileImage from "./ProfileImage.tsx";
 interface Props {
     session: Session | null;
     userEmail?: string;
-    apiUrl: string;
-    subs: Subscription[];
+    subs: UserSubscription[];
 }
 
 const Sidebar = ({ session, userEmail, subs }: Props) => {

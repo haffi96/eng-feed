@@ -1,3 +1,4 @@
+// FIXME: Remove this, directly calling from UI now
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda"
 import { createUserBlogEntry } from "../db/query"
 

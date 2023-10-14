@@ -9,7 +9,17 @@ export type newBlogPostEntry = typeof blogPosts.$inferInsert;
 
 // Users table
 export const upsertUserEntry = async (newUserParams: typeof users.$inferInsert) => {
-    return await db.insert(users).values(newUserParams).onConflictDoNothing({ target: [users.email] })
+    // Not doing an atomic transaction with onConflictDoNothing because
+    // at the moment, the frontend is calling this alot, so it results
+    // in a lot of incrementing users.id without actually inserting a new user
+    // To fix, make ui do less calls?
+    const result = await db.select({ userId: users.id }).from(users).where(eq(users.email, newUserParams.email!))
+
+    if (result.length === 0) {
+        return await db.insert(users).values(newUserParams)
+    } else {
+        return result[0].userId
+    }
 }
 
 export const fetchUserById = async (userId: number) => {

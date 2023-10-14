@@ -1,18 +1,17 @@
 ---
 import SideBarItems from "./SideBarItems.tsx";
 import { SignOut } from "auth-astro/components";
-import type { Subscription } from "../types";
+import type { UserSubscription } from "../types";
 import type { Session } from "@auth/core/types";
 import ProfileImage from "./ProfileImage.tsx";
 
 interface Props {
     session: Session | null;
     userEmail?: string;
-    apiUrl: string;
-    subs: Subscription[];
+    subs: UserSubscription[];
 }
 
-const { session, userEmail, apiUrl, subs } = Astro.props;
+const { session, userEmail, subs } = Astro.props;
 ---
 
 <nav

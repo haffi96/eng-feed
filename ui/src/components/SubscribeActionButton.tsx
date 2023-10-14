@@ -1,9 +1,9 @@
 import { useState } from "preact/hooks";
-import type { Subscription } from "../types";
+import type { UserSubscription } from "../types";
 
 interface SubscribedBlogItemProps {
     userEmail?: string;
-    sub: Subscription;
+    sub: UserSubscription;
     removeSubAction: (blogId: number) => void;
 }
 

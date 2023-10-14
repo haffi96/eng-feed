@@ -1,14 +1,14 @@
 import { useState } from "preact/hooks";
-import type { Subscription } from "../types";
+import type { UserSubscription } from "../types";
 import SubscribeActionButton from "@components/SubscribeActionButton";
 
 interface SubscribedBlogItemProps {
     userEmail?: string;
-    subs: Subscription[];
+    subs: UserSubscription[];
 }
 
 export default function AllSubscriptionsList({ userEmail, subs }: SubscribedBlogItemProps) {
-    const [subscribedBlogs, setSubscribedBlogs] = useState<Subscription[]>(subs);
+    const [subscribedBlogs, setSubscribedBlogs] = useState<UserSubscription[]>(subs);
 
     const removeSubAction = (blogId: number) => {
         const newSubs = subscribedBlogs.filter((s) => s.blogId !== blogId);
