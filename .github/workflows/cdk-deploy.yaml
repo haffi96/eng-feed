@@ -1,15 +1,16 @@
-name: CDK Deploy
+name: CI
 
 on:
   push:
     branches: ["master"]
+  pull_request:
+    branches: [master]
 
 jobs:
-  aws_cdk:
+  aws_cdk_deploy:
+    if: github.event_name == 'push'
+    environment: production
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./aws
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       ENV: dev
