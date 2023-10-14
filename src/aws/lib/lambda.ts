@@ -13,7 +13,7 @@ const __dirname = dirname(__filename); // get the name of the directory
 
 dotenvConfig()
 
-const db_url = process.env.ENV === "local" || "dev" ? process.env.DEV_DATABASE_URL : process.env.PROD_DATABASE_URL
+const db_url = process.env.ENV === "prod" ? process.env.PROD_DATABASE_URL : process.env.DEV_DATABASE_URL
 
 export class GenericLambda extends NodejsFunction {
     constructor(scope: Construct, fileName: string) {
