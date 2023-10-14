@@ -188,9 +188,6 @@ export const createUserBlogEntry = async (userEmail: string, blogId: number) => 
 
     const result = await db.select({ userId: userQuery.userId }).from(userQuery)
 
-    console.log("RESULT", result);
-
-
     const { userId } = result[0]
 
     await db.insert(userBlogs).values({ user_id: userId, blog_id: blogId })

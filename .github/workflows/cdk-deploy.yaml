@@ -27,7 +27,7 @@ jobs:
           cache-dependency-path: ./package-lock.json
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: Install AWS CDK
         run: npm i -g aws-cdk
