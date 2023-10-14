@@ -1,18 +1,18 @@
 // FIXME: Remove this, directly calling from UI now
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda"
-import { createUserBlogEntry } from "../db/query"
+import type { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda"
+import { upsertUserEntry } from "../db/query"
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const reqBody = event.body ? JSON.parse(event.body) : {}
 
-    const { email, blogId } = reqBody
+    const { email, name } = reqBody
 
     try {
-        await createUserBlogEntry(email, blogId)
+        await upsertUserEntry({ email, username: name })
         return {
             statusCode: 200,
             body: JSON.stringify({
-                reqBody
+                message: "success"
             }),
         }
     } catch (err) {

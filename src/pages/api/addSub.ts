@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro"
-import { createUserBlogEntry } from "../../../aws/backend/db/query"
+import { createUserBlogEntry } from "@aws/backend/db/query"
 
 export const POST: APIRoute = async ({ request }) => {
     const reqBody = await request.json();

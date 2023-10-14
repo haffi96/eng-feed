@@ -1,4 +1,4 @@
-import { APIGatewayProxyResult, SQSEvent } from "aws-lambda"
+import type { APIGatewayProxyResult, SQSEvent } from "aws-lambda"
 import { fetchUserEmailByUuid, fetchPostsByUuids, updateUserPostEntry } from "../db/query"
 
 export const handler = async (event: SQSEvent): Promise<APIGatewayProxyResult> => {

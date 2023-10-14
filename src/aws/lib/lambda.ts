@@ -3,8 +3,13 @@ import { Architecture, Runtime } from "aws-cdk-lib/aws-lambda"
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs"
 import { RetentionDays } from "aws-cdk-lib/aws-logs"
 import { Construct } from "constructs"
-import * as path from "path"
 import { config as dotenvConfig } from "dotenv"
+import { join as pathJoin, dirname } from "path"
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
+const __dirname = dirname(__filename); // get the name of the directory
+
 
 dotenvConfig()
 
@@ -13,7 +18,7 @@ export class GenericLambda extends NodejsFunction {
         super(scope, fileName, {
             architecture: Architecture.ARM_64,
             runtime: Runtime.NODEJS_18_X,
-            entry: path.join(__dirname, `../backend/lambda/${fileName}.ts`),
+            entry: pathJoin(__dirname, `../backend/lambda/${fileName}.ts`),
             logRetention: RetentionDays.ONE_DAY,
             timeout: Duration.seconds(30),
             environment: {

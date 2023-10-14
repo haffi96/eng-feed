@@ -16,7 +16,12 @@ import * as lambdaEventSources from "aws-cdk-lib/aws-lambda-event-sources"
 import { GenericLambda } from "./lambda"
 import { ApiGateway } from "./apiGateway"
 import { CfnOutput } from "aws-cdk-lib"
-import path = require("path")
+import { join as pathJoin, dirname } from "path"
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
+const __dirname = dirname(__filename); // get the name of the directory
+
 
 export class TestStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -153,7 +158,7 @@ export class TestStack extends cdk.Stack {
 
         // Specify assets to deploy to the bucket
         new s3Deployment.BucketDeployment(this, "DeployAssets", {
-            sources: [s3Deployment.Source.asset(path.join(__dirname, "../assets"))],
+            sources: [s3Deployment.Source.asset(pathJoin(__dirname, "../assets"))],
             destinationBucket: assetsBucket,
         })
 

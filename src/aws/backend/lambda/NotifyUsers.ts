@@ -1,5 +1,5 @@
 import { fetchUsersToNotify } from "../db/query"
-import { SQSClient, SendMessageBatchCommand, SendMessageBatchCommandInput } from "@aws-sdk/client-sqs"
+import { SQSClient, SendMessageBatchCommand, type SendMessageBatchCommandInput } from "@aws-sdk/client-sqs"
 import { v4 as uuidv4 } from "uuid"
 
 // SQS Confiig

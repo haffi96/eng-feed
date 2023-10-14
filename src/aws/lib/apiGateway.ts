@@ -1,6 +1,6 @@
 import { RemovalPolicy } from "aws-cdk-lib"
 import { LambdaIntegration, LogGroupLogDestination, RestApi } from "aws-cdk-lib/aws-apigateway"
-import { IFunction } from "aws-cdk-lib/aws-lambda"
+import type { IFunction } from "aws-cdk-lib/aws-lambda"
 import { LogGroup, RetentionDays } from "aws-cdk-lib/aws-logs"
 import { Construct } from "constructs"
 

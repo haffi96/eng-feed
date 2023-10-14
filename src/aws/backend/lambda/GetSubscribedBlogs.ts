@@ -1,21 +1,19 @@
 // FIXME: Remove this, will call directly from ui
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda"
-import { fetchAllPostsForUser, fetchAllPosts } from "../db/query"
+// FIXME: Remove this, will call directly from ui
+import type { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda"
+import { fetchUserBlogsWithSubscriptionStatus, fetchAllBlogs } from "../db/query"
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const params = event.queryStringParameters
     const userEmail = params?.userEmail
-    const offset = params?.offset ? parseInt(params.offset) : 0
-    const limit = params?.limit ? parseInt(params.limit) : 10
 
     try {
-
-        const posts = userEmail
-            ? await fetchAllPostsForUser({ userEmail, offset, limit })
-            : await fetchAllPosts({ offset, limit })
+        const subscribedBlogs = userEmail
+            ? await fetchUserBlogsWithSubscriptionStatus(userEmail)
+            : await fetchAllBlogs()
         return {
             statusCode: 200,
-            body: JSON.stringify(posts),
+            body: JSON.stringify(subscribedBlogs),
         }
     } catch (err) {
         console.log(err)

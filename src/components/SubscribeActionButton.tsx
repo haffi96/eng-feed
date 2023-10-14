@@ -106,7 +106,7 @@ export default function SubscribeActionButton({ userEmail, sub, removeSubAction 
         )
     }
 
-    if (userEmail === undefined) {
+    if (userEmail === "") {
         return (<LoggedOutSubscribeButton />)
     } else {
         if (unSubTrigger) {

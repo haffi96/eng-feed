@@ -1,5 +1,6 @@
 // FIXME: Remove this, directly calling from UI now
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda"
+// FIXME: Remove this, directly calling from UI now
+import type { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda"
 import { deleteUserBlogEntry } from "../db/query"
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
