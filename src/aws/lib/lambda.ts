@@ -13,6 +13,8 @@ const __dirname = dirname(__filename); // get the name of the directory
 
 dotenvConfig()
 
+const db_url = process.env.ENV === "local" || "dev" ? process.env.DEV_DATABASE_URL : process.env.PROD_DATABASE_URL
+
 export class GenericLambda extends NodejsFunction {
     constructor(scope: Construct, fileName: string) {
         super(scope, fileName, {
@@ -22,8 +24,7 @@ export class GenericLambda extends NodejsFunction {
             logRetention: RetentionDays.ONE_DAY,
             timeout: Duration.seconds(30),
             environment: {
-                TEST_SECRET: "foo",
-                DATABASE_URL: process.env.DATABASE_URL as string,
+                DATABASE_URL: db_url as string,
                 ENV: process.env.ENV as string,
                 SQS_QUEUE_URL: process.env.SQS_QUEUE_URL as string,
                 RESEND_API_KEY: process.env.RESEND_API_KEY as string,
