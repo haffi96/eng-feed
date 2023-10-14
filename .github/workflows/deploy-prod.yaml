@@ -1,13 +1,12 @@
-name: CI
+name: Prod deploy
 
 on:
   push:
     branches: ["master"]
-  pull_request:
-    branches: [master]
 
 jobs:
   aws_cdk_deploy:
+    name: CDK Prod Deployment
     if: github.event_name == 'push'
     environment: production
     runs-on: ubuntu-latest
@@ -45,3 +44,18 @@ jobs:
 
       - name: Deploy stack
         run: cdk deploy --all --require-approval never
+
+  vercel_prod_deploy:
+    name: Vercel Prod Deployment
+    runs-on: ubuntu-latest
+    needs: [aws_cdk_deploy]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Build Project Artifacts
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
