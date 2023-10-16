@@ -8,6 +8,11 @@ const sqsClient = new SQSClient({ region: "eu-west-2" })
 export const handler = async () => {
     try {
         const user_posts = await fetchUsersToNotify()
+
+        if (user_posts.size === 0) {
+            return JSON.stringify({ message: "No users to notify" })
+        }
+
         const obj = Object.fromEntries(user_posts)
 
         const messageId = uuidv4()
