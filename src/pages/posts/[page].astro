@@ -27,11 +27,6 @@ async function upsertUser(email: string, userName: string) {
         await upsertUserEntry({ email, username: userName });
     } catch (err) {
         console.log(err);
-        return new Response(
-            JSON.stringify({
-                message: "some error happened",
-            }),
-        );
     }
 }
 
@@ -63,7 +58,9 @@ const nextPage = posts.length > 1 ? pageNumber + 1 : pageNumber;
         </div>
         <div class="items-center text-center p-5">
             <div>
-                <h1 class="text-xl font-extrabold p-2">Latest posts</h1>
+                <a href="/posts/1">
+                    <h1 class="text-xl font-extrabold p-2">Latest posts</h1>
+                </a>
             </div>
             <div class="mt-5">
                 {
