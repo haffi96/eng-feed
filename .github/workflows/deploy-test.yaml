@@ -4,6 +4,9 @@ on:
   pull_request:
     branches: ["master"]
 
+permissions:
+   pull-requests: write
+
 jobs:
   aws_cdk_test_deploy:
     name: CDK Test Deployment
@@ -47,6 +50,8 @@ jobs:
   vercel_test_deploy:
     name: Vercel preview Deployment
     runs-on: ubuntu-latest
+    env:
+      PREVIEW_DOMAIN: eng-feed-dev.vercel.app
     needs: [aws_cdk_test_deploy]
     steps:
       - uses: actions/checkout@v4
@@ -57,4 +62,12 @@ jobs:
       - name: Build Project Artifacts
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
       - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+        run: |
+          url="$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})"
+          vercel alias --token=${{ secrets.VERCEL_TOKEN }} set "$url" $PREVIEW_DOMAIN
+      - name: Comment custom domain on PR
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            Preview: https://${{ env.PREVIEW_DOMAIN }}
+          comment_tag: preview_comment_tag
