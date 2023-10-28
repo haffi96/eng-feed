@@ -32,7 +32,7 @@ export default function SubscribeActionButton({ userEmail, sub, removeSubAction 
     }
 
     const redirectToLogin = () => {
-        window.location.href = `/login`;
+        window.location.href = "/login";
     }
 
     async function addSubscriptionForUser(blogId: number) {

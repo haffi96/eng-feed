@@ -12,6 +12,7 @@ interface Props {
 }
 
 const { session, userEmail, subs } = Astro.props;
+const blogNameParam = Astro.url.searchParams.get("blog") as string | undefined;
 ---
 
 <nav
@@ -39,5 +40,5 @@ p-1 h-full fixed top-0 left-0 hidden lg:block"
             )
         }
     </div>
-    <SideBarItems client:load subs={subs} userEmail={userEmail} />
+    <SideBarItems client:load subs={subs} userEmail={userEmail} blogNameParam={blogNameParam} />
 </nav>

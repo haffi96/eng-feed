@@ -1,0 +1,75 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import ThemeButton from "../../components/ThemeToggle";
+import BlogView from "../../components/BlogView.astro";
+import PageNavButtons from "@components/PageNavButtons.astro";
+import { fetchAllPostsForBlogName } from "@aws/backend/db/query";
+
+const blogName = Astro.url.searchParams.get("blog");
+const page = Astro.url.searchParams.get("page");
+
+if (!blogName) {
+    return {
+        status: 404,
+    };
+}
+
+// Page logic
+const pageNumber = Number(page);
+const prevPage = pageNumber !== 1 ? pageNumber - 1 : 1;
+const pagePostLimit = 10;
+const posts = await fetchAllPostsForBlogName({
+    blogName,
+    limit: pagePostLimit,
+    offset: (pageNumber - 1) * pagePostLimit,
+});
+const nextPage = posts.length > 1 ? pageNumber + 1 : pageNumber;
+---
+
+<Layout title={`${blogName} blogs`}>
+    <main>
+        <div class="text-center">
+            <ThemeButton client:only />
+        </div>
+        <div class="items-center text-center p-5">
+            <div>
+                <a href="/posts/1">
+                    <h1 class="text-xl font-extrabold p-2">Latest posts</h1>
+                </a>
+            </div>
+            <div class="mt-5">
+                {
+                    posts.length > 1 && (
+                        <PageNavButtons
+                            prevPage={prevPage}
+                            nextPage={nextPage}
+                            filtered={true}
+                            blogName={blogName}
+                        />
+                    )
+                }
+            </div>
+            {
+                posts.length > 1 ? (
+                    posts.map((p: any) => {
+                        return <BlogView blog={p} />;
+                    })
+                ) : (
+                    <div class="text-lg p-10">No posts to show...</div>
+                )
+            }
+        </div>
+        <div class="p-5 mb-5">
+            {
+                posts.length > 1 && (
+                    <PageNavButtons
+                        prevPage={prevPage}
+                        nextPage={nextPage}
+                        filtered={true}
+                        blogName={blogName}
+                    />
+                )
+            }
+        </div>
+    </main>
+</Layout>

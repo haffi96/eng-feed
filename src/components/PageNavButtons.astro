@@ -1,19 +1,22 @@
 ---
 export const prerender = true;
 
-const { prevPage, nextPage } = Astro.props;
+const { prevPage, nextPage, filtered, blogName } = Astro.props;
+
+const nextPageUrl = filtered && blogName ? `/posts?blog=${blogName}&page=${nextPage}` : `/posts/${nextPage}`;
+const prevPageUrl = filtered && blogName ? `/posts?blog=${blogName}&page=${prevPage}` : `/posts/${prevPage}`;
 ---
 
 <div class="flex">
     <div class="flex flex-row w-full justify-between">
         <a
-            href=`/posts/${prevPage}`
+            href={prevPageUrl}
             class="hover:bg-zinc-600 shadow-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100"
         >
             Prev
         </a>
         <a
-            href=`/posts/${nextPage}`
+            href={nextPageUrl}
             class="hover:bg-zinc-600 shadow-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100"
         >
             Next
