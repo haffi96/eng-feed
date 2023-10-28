@@ -26,6 +26,15 @@ subs.sort((a, b) =>
     a.subscribed === b.subscribed ? 0 : a.subscribed ? -1 : 1,
 );
 
+// Push filtered blog to the top
+const blogName = Astro.url.searchParams.get("blog");
+if (blogName) {
+    const blogIndex = subs.findIndex((sub) => sub.companyName === blogName);
+    if (blogIndex !== -1) {
+        subs.unshift(subs.splice(blogIndex, 1)[0]);
+    }
+}
+
 const comingSoonEntry = {
     blogId: 1000,
     blogLink: "/",

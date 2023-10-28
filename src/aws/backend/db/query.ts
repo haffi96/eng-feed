@@ -109,6 +109,26 @@ export const fetchAllPosts = async ({ offset, limit }: { offset: number, limit: 
         .limit(limit)
 }
 
+export const fetchAllPostsForBlogName = async (
+    { blogName, offset, limit }: { blogName: string, offset: number, limit: number }
+) => {
+    return await db.select({
+        postId: blogPosts.id,
+        postUuid: blogPosts.post_uuid,
+        title: blogPosts.title,
+        link: blogPosts.link,
+        author: blogPosts.author,
+        publishedDate: blogPosts.publishedDate,
+        companyName: allBlogs.companyName,
+    })
+        .from(blogPosts)
+        .innerJoin(allBlogs, and(eq(allBlogs.id, blogPosts.blog_id), eq(allBlogs.companyName, blogName)))
+        .orderBy(desc(blogPosts.publishedDate))
+        .offset(offset)
+        .limit(limit)
+}
+
+
 export const createBlogPostEntry = async (newBlogPostParams: newBlogPostEntry) => {
     return await db
         .insert(blogPosts)
