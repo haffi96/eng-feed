@@ -43,14 +43,16 @@ const comingSoonEntry = {
 };
 
 subs.push(comingSoonEntry);
+const blogNameParam = Astro.url.searchParams.get("blog") as string | undefined;
 ---
 
 <div class="dark:text-black">
-    <Sidebar session={session} userEmail={userEmail} subs={subs} />
+    <Sidebar session={session} userEmail={userEmail} subs={subs} blogNameParam={blogNameParam} />
     <MobileSideBar
         client:load
         session={session}
         userEmail={userEmail}
         subs={subs}
+        blogNameParam={blogNameParam}
     />
 </div>

@@ -23,14 +23,17 @@ export default function AllSubscriptionsList({ userEmail, subs, blogNameParam }:
                 subscribedBlogs.map((sub) => {
                     return (
                         <div class={`flex flex-row justify-between hover:outline hover:outline-zinc-600/70
-                                    rounded-lg p-2 shadow-md transition:ease-in duration-100
+                                    rounded-lg p-2 shadow-md transition:ease-in duration-100 space-x-1
                                     ${blogNameParam === sub.companyName ? "bg-zinc-600" : ""}`}
                         >
                             <button
                                 onClick={() => { window.location.href = `/posts?blog=${sub.companyName}&page=1` }}
                                 class="w-full h-full"
                             >
+                                <p class="rounded-lg hover:shadow-sm hover:shadow-black
+                                        transition-shadow transition:ease-in duration-200">
                                 {sub.companyName}
+                                </p>
                             </button>
                             <div class="flex flex-row space-x-1">
                                 <button

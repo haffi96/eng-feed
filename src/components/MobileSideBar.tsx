@@ -9,9 +9,10 @@ interface Props {
     session: Session | null;
     userEmail?: string;
     subs: UserSubscription[];
+    blogNameParam?: string;
 }
 
-const Sidebar = ({ session, userEmail, subs }: Props) => {
+const Sidebar = ({ session, userEmail, subs, blogNameParam }: Props) => {
 
     const [showSidebar, setShowSidebar] = useState(false);
 
@@ -75,6 +76,7 @@ const Sidebar = ({ session, userEmail, subs }: Props) => {
                 <SideBarItems
                     userEmail={userEmail}
                     subs={subs}
+                    blogNameParam={blogNameParam}
                 />
             </div >
         </>

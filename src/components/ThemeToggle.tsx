@@ -30,10 +30,6 @@ const icons = [
 export default function ThemeToggle() {
     const [theme, setTheme] = useState(window.localStorage.getItem("theme") ?? "light");
 
-    const handleClick = () => {
-        setTheme(theme === "light" ? "dark" : "light");
-    };
-
     useEffect(() => {
         if (theme === "dark") {
             document.documentElement.classList.add("dark");
@@ -44,8 +40,14 @@ export default function ThemeToggle() {
     }, [theme]);
 
     return (
-        <button className="p-5" onClick={handleClick}>
+        <div className="p-5 flex flex-row space-x-1 italic justify-center items-center w-full
+                text-xs text-zinc-400 dark:text-zinc-200/20">
+            <p>
+                {theme === "light" ? "Light mode?" : "Dark mode?"}
+            </p>
+            <button onClick={() => { setTheme(theme === "light" ? "dark" : "light") }}>
             {theme === "light" ? icons[1] : icons[0]}
-        </button>
+            </button>
+        </div>
     );
 }

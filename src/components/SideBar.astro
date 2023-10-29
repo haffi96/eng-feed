@@ -9,10 +9,10 @@ interface Props {
     session: Session | null;
     userEmail?: string;
     subs: UserSubscription[];
+    blogNameParam?: string;
 }
 
-const { session, userEmail, subs } = Astro.props;
-const blogNameParam = Astro.url.searchParams.get("blog") as string | undefined;
+const { session, userEmail, subs, blogNameParam } = Astro.props;
 ---
 
 <nav
