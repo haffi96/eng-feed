@@ -41,9 +41,9 @@ export default function ThemeToggle() {
 
     return (
         <div className="p-5 flex flex-row space-x-1 italic justify-center items-center w-full
-                text-xs text-zinc-400 dark:text-zinc-200/20">
+                text-xs text-zinc-400/80 dark:text-zinc-200/20 transition transition:ease-in duration-500">
             <p>
-                {theme === "light" ? "Light mode?" : "Dark mode?"}
+                {theme === "light" ? "Dark mode?" : "Light mode?"}
             </p>
             <button onClick={() => { setTheme(theme === "light" ? "dark" : "light") }}>
             {theme === "light" ? icons[1] : icons[0]}
