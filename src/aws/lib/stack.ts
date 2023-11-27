@@ -40,9 +40,7 @@ export class DevFeedStack extends cdk.Stack {
         const fetchUserToNotify = new GenericLambda(this, "NotifyUsers")
 
         // Lambda schedule rule for notifying users
-        const cron_exp = process.env.ENV === "dev" ?
-            { minute: "0", hour: "9" }
-            : { minute: "0", hour: "9", weekDay: "FRI" }
+        const cron_exp = { minute: "0", hour: "9", weekDay: "FRI" }
         const fetchUserToNotifyRule = new events.Rule(this, "fetchUserToNotifyRule", {
             schedule: events.Schedule.cron(cron_exp),
         })
