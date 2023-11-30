@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD COLUMN "email_preference" boolean DEFAULT false NOT NULL;
