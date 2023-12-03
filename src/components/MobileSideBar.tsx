@@ -4,6 +4,7 @@ import type { UserSubscription } from "../types";
 import type { Session } from "@auth/core/types";
 import { signOut } from "auth-astro/client";
 import ProfileImage from "./ProfileImage.tsx";
+import EmailPreferences from "./EmailPreferences.tsx";
 
 interface Props {
     session: Session | null;
@@ -62,6 +63,16 @@ const Sidebar = ({ session, userEmail, subs, blogNameParam }: Props) => {
                                     class="hover:bg-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100">
                                     Sign out
                                 </button>
+                                {
+                                    userEmail && (
+                                        <div class="flex flex-col">
+                                            <EmailPreferences
+                                                email={userEmail}
+                                            />
+                                            <p class="text-xs">Emails sent every Fri 9am (GMT)</p>
+                                        </div>
+                                    )
+                                }
                             </div>
                         ) : (
                             <a

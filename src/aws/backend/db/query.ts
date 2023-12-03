@@ -27,6 +27,19 @@ export const fetchUserById = async (userId: number) => {
     return result[0]
 }
 
+export const setUserEmailPref = async (email: string) => {
+    const result = await db.select({ emailPref: users.email_preference }).from(users).where(eq(users.email, email))
+
+    const currentPref = result[0].emailPref
+
+    await db.update(users).set({ email_preference: !currentPref }).where(eq(users.email, email))
+}
+
+export const getUserEmailPref = async (email: string) => {
+    const result = await db.select({ emailPref: users.email_preference }).from(users).where(eq(users.email, email))
+    return result[0].emailPref
+}
+
 export const fetchUserEmailByUuid = async (userUuid: string) => {
     const result = await db.select({ userEmail: users.email }).from(users).where(eq(users.user_uuid, userUuid))
     const { userEmail } = result[0]
