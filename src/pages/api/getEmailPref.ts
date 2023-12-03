@@ -7,7 +7,6 @@ export const GET: APIRoute = async ({ request }) => {
 
     const userEmail = reqParams.get("email");
 
-
     try {
         const emailPref = await getUserEmailPref(userEmail!);
         return new Response(JSON.stringify({
