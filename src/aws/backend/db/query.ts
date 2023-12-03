@@ -23,7 +23,21 @@ export const upsertUserEntry = async (newUserParams: typeof users.$inferInsert) 
 }
 
 export const fetchUserById = async (userId: number) => {
-    return await db.select({ userUuid: users.user_uuid }).from(users).where(eq(users.id, userId))
+    const result = await db.select({ userUuid: users.user_uuid, emailPref: users.email_preference }).from(users).where(eq(users.id, userId))
+    return result[0]
+}
+
+export const setUserEmailPref = async (email: string) => {
+    const result = await db.select({ emailPref: users.email_preference }).from(users).where(eq(users.email, email))
+
+    const currentPref = result[0].emailPref
+
+    await db.update(users).set({ email_preference: !currentPref }).where(eq(users.email, email))
+}
+
+export const getUserEmailPref = async (email: string) => {
+    const result = await db.select({ emailPref: users.email_preference }).from(users).where(eq(users.email, email))
+    return result[0].emailPref
 }
 
 export const fetchUserEmailByUuid = async (userUuid: string) => {
@@ -275,8 +289,12 @@ export const fetchUsersToNotify = async () => {
     for (const user of users) {
         const userRecord = await fetchUserById(user.userId!)
 
-        if (!userIdsToNotify.has(userRecord[0].userUuid)) {
-            userIdsToNotify.set(userRecord[0].userUuid, [])
+        if (userRecord.emailPref === false) {
+            continue
+        }
+
+        if (!userIdsToNotify.has(userRecord.userUuid)) {
+            userIdsToNotify.set(userRecord.userUuid, [])
         }
 
         newPosts.find((post) => {
@@ -288,7 +306,7 @@ export const fetchUsersToNotify = async () => {
                         console.log(err)
                     })
 
-                userIdsToNotify.get(userRecord[0].userUuid)!.push(post.postUuid)
+                userIdsToNotify.get(userRecord.userUuid)!.push(post.postUuid)
             }
         })
     }

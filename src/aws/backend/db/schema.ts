@@ -10,6 +10,7 @@ export const users = pgTable("users", {
     user_uuid: uuid("user_uuid").notNull().default(uuidSql),
     username: varchar("username", { length: 256 }),
     email: varchar("email", { length: 256 }),
+    email_preference: boolean("email_preference").notNull().default(false),
 }, (users) => {
     return {
         usernameIndex: uniqueIndex("username_idx").on(users.username),
