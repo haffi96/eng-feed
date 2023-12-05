@@ -29,6 +29,20 @@
       "when": 1701385125724,
       "tag": "0003_clever_slapstick",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1701627692321,
+      "tag": "0004_milky_hercules",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1701639575835,
+      "tag": "0005_dry_bushwacker",
+      "breakpoints": true
     }
   ]
 }

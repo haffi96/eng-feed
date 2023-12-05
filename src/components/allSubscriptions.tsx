@@ -3,12 +3,12 @@ import type { UserSubscription } from "../types";
 import SubscribeActionButton from "@components/SubscribeActionButton";
 
 interface SubscribedBlogItemProps {
-    userEmail?: string;
+    userId?: string;
     subs: UserSubscription[];
     blogNameParam?: string;
 }
 
-export default function AllSubscriptionsList({ userEmail, subs, blogNameParam }: SubscribedBlogItemProps) {
+export default function AllSubscriptionsList({ userId, subs, blogNameParam }: SubscribedBlogItemProps) {
     const [subscribedBlogs, setSubscribedBlogs] = useState<UserSubscription[]>(subs);
 
     const removeSubAction = (blogId: number) => {
@@ -44,7 +44,7 @@ export default function AllSubscriptionsList({ userEmail, subs, blogNameParam }:
                                     </a>
                                 </button>
                                 <SubscribeActionButton
-                                    userEmail={userEmail}
+                                    userId={userId}
                                     sub={sub}
                                     removeSubAction={removeSubAction}
                                 />

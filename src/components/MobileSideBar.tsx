@@ -1,19 +1,21 @@
 import { useState } from "preact/hooks";
 import SideBarItems from "./SideBarItems.tsx";
 import type { UserSubscription } from "../types";
-import type { Session } from "@auth/core/types";
-import { signOut } from "auth-astro/client";
+// import type { Session } from "@auth/core/types";
+// import { signOut } from "auth-astro/client";
 import ProfileImage from "./ProfileImage.tsx";
-import EmailPreferences from "./EmailPreferences.tsx";
+import MobileEmailPreferences from "./MobileEmailPreferences.tsx";
 
 interface Props {
-    session: Session | null;
-    userEmail?: string;
+    // session: Session | null;
+    session: any;
+    userId: string;
+    userEmail: string | undefined;
     subs: UserSubscription[];
     blogNameParam?: string;
 }
 
-const Sidebar = ({ session, userEmail, subs, blogNameParam }: Props) => {
+const Sidebar = ({ session, userId, userEmail, subs, blogNameParam }: Props) => {
 
     const [showSidebar, setShowSidebar] = useState(false);
 
@@ -59,20 +61,16 @@ const Sidebar = ({ session, userEmail, subs, blogNameParam }: Props) => {
                             <div>
                                 <ProfileImage session={session} />
                                 <button
-                                    onClick={() => signOut()}
+                                    // onClick={() => signOut()}
                                     class="hover:bg-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100">
                                     Sign out
                                 </button>
-                                {
-                                    userEmail && (
                                         <div class="flex flex-col">
-                                            <EmailPreferences
-                                                email={userEmail}
-                                            />
-                                            <p class="text-xs">Emails sent every Fri 9am (GMT)</p>
-                                        </div>
-                                    )
-                                }
+                                    <MobileEmailPreferences
+                                        userId={userId}
+                                        userEmail={userEmail}
+                                    />
+                                </div>
                             </div>
                         ) : (
                             <a
@@ -85,7 +83,7 @@ const Sidebar = ({ session, userEmail, subs, blogNameParam }: Props) => {
                     }
                 </div>
                 <SideBarItems
-                    userEmail={userEmail}
+                    userId={userId}
                     subs={subs}
                     blogNameParam={blogNameParam}
                 />

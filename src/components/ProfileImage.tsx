@@ -1,6 +1,6 @@
-import type { Session } from "@auth/core/types";
+// import type { Session } from "@auth/core/types";
 
-const ProfileImage = ({ session }: { session: Session }) => {
+const ProfileImage = ({ session }: { session: any }) => {
     return (
         <div>
             {session.user?.image ? (

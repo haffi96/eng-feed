@@ -5,10 +5,10 @@ export const GET: APIRoute = async ({ request }) => {
 
     const reqParams = new URL(request.url).searchParams;
 
-    const userEmail = reqParams.get("email");
+    const userId = reqParams.get("userId");
 
     try {
-        const emailPref = await getUserEmailPref(userEmail!);
+        const emailPref = await getUserEmailPref(userId!);
         return new Response(JSON.stringify({
             emailPref: emailPref
         }))

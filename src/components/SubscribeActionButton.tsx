@@ -2,12 +2,12 @@ import { useState } from "preact/hooks";
 import type { UserSubscription } from "../types";
 
 interface SubscribedBlogItemProps {
-    userEmail?: string;
+    userId?: string;
     sub: UserSubscription;
     removeSubAction: (blogId: number) => void;
 }
 
-export default function SubscribeActionButton({ userEmail, sub, removeSubAction }: SubscribedBlogItemProps) {
+export default function SubscribeActionButton({ userId, sub, removeSubAction }: SubscribedBlogItemProps) {
     const [unSubTrigger, setUnSubTrigger] = useState<boolean>(false);
 
     async function unSub(blogId: number) {
@@ -17,7 +17,7 @@ export default function SubscribeActionButton({ userEmail, sub, removeSubAction 
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                userEmail,
+                userId,
                 blogId
             }),
         });
@@ -42,14 +42,14 @@ export default function SubscribeActionButton({ userEmail, sub, removeSubAction 
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                userEmail,
+                userId,
                 blogId
             }),
         });
         window.location.reload();
     }
 
-    const iconRef = !sub.subscribed || userEmail === undefined ? "/add-outline.svg" : "/removeIcon.svg";
+    const iconRef = !sub.subscribed || userId === undefined ? "/add-outline.svg" : "/removeIcon.svg";
 
     const LoggedOutSubscribeButton = () => {
         return (
@@ -106,7 +106,7 @@ export default function SubscribeActionButton({ userEmail, sub, removeSubAction 
         )
     }
 
-    if (userEmail === "") {
+    if (userId === "") {
         return (<LoggedOutSubscribeButton />)
     } else {
         if (unSubTrigger) {

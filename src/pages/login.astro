@@ -1,7 +1,6 @@
 ---
 export const prerender = true;
 
-import { SignIn } from "auth-astro/components";
 import ThemeButton from "@components/ThemeToggle";
 import { ViewTransitions } from "astro:transitions";
 ---
@@ -26,7 +25,7 @@ import { ViewTransitions } from "astro:transitions";
         <div
             class="flex flex-col w-full h-full font-mono justify-center items-center space-y-4"
         >
-            <SignIn
+            <!-- <SignIn
                 class="flex flex-row bg-[#4285F4] font-roboto items-center text-white p-1 rounded-md"
                 provider="google"
             >
@@ -44,7 +43,21 @@ import { ViewTransitions } from "astro:transitions";
                     alt="github-official-logo"
                 />
                 <p class="p-2">Sign in with Github</p>
-            </SignIn>
+            </SignIn> -->
+            <div class="flex flex-row bg-zinc-500 font-roboto items-center text-white px-3.5 py-1.5 rounded-md">
+                <img
+                    width="30px"
+                    height="30px"
+                    src="/github-mark.png"
+                    alt="github-official-logo"
+                />
+                <a
+                href="/login/github"
+                class="p-2"
+                >
+                Sign in with GitHub
+                </a>
+            </div>
         </div>
     </body>
 </html>

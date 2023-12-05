@@ -2,12 +2,12 @@ import AllSubscriptionsList from "./allSubscriptions";
 import type { UserSubscription } from "@/types";
 
 interface Props {
-    userEmail?: string;
+    userId?: string;
     subs: UserSubscription[];
     blogNameParam?: string;
 }
 
-const SideBarItems = ({ userEmail, subs, blogNameParam }: Props) => {
+const SideBarItems = ({ userId, subs, blogNameParam }: Props) => {
     return (
         <div class="w-7/8 lg:w-5/6 m-auto space-y-5 mt-10">
             <a
@@ -26,7 +26,7 @@ const SideBarItems = ({ userEmail, subs, blogNameParam }: Props) => {
                     >Subscriptions</summary
                     >
                     <AllSubscriptionsList
-                        userEmail={userEmail}
+                        userId={userId}
                         subs={subs}
                         blogNameParam={blogNameParam}
                     />

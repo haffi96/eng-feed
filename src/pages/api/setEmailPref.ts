@@ -4,10 +4,10 @@ import { setUserEmailPref } from "@aws/backend/db/query"
 export const POST: APIRoute = async ({ request }) => {
     const reqBody = await request.json();
 
-    const { userEmail, enabled } = reqBody;
+    const { userId, newStatus } = reqBody;
 
     try {
-        await setUserEmailPref(userEmail);
+        await setUserEmailPref(userId, newStatus);
     } catch (err) {
         console.log(err);
         return new Response(JSON.stringify({

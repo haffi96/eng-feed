@@ -1,19 +1,21 @@
 ---
 import SideBarItems from "./SideBarItems.tsx";
-import { SignOut } from "auth-astro/components";
+// import { SignOut } from "auth-astro/components";
 import type { UserSubscription } from "../types";
-import type { Session } from "@auth/core/types";
+// import type { Session } from "@auth/core/types";
 import ProfileImage from "./ProfileImage.tsx";
 import EmailPreferences from "@components/EmailPreferences";
+import type { Session } from "lucia";
+const session = await Astro.locals.auth.validate();
 
 interface Props {
-    session: Session | null;
-    userEmail?: string;
+    userId: string;
+    userEmail: string | undefined;
     subs: UserSubscription[];
     blogNameParam?: string;
 }
 
-const { session, userEmail, subs, blogNameParam } = Astro.props;
+const { userId, userEmail, subs, blogNameParam } = Astro.props;
 ---
 
 <nav
@@ -28,34 +30,19 @@ p-1 h-full fixed top-0 left-0 hidden lg:block no-scrollbar"
                 <>
                     <ProfileImage session={session} />
                     <div class="flex flex-col w-2/3 m-auto space-y-2">
-                        <SignOut class="hover:bg-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100">
+                        <a
+                        href="/api/logout"
+                        class="hover:bg-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100"
+                        >
                             Sign out
-                        </SignOut>
-                        {userEmail && (
+                        </a>
+                        {session && (
                             <div class="flex flex-row items-center justify-center">
                                 <EmailPreferences
                                     client:load
-                                    email={userEmail}
+                                    userId={userId}
+                                    userEmail={userEmail}
                                 />
-                                <div>
-                                        <button
-                                            type="button"
-                                            class="py-0.5 px-1 text-xs inline-flex justify-center items-center gap-2 rounded-full
-                                            bg-zinc-300 border border-zinc-500 text-black hover:bg-zinc-500
-                                            dark:bg-zinc-800 dark:text-white
-                                            dark:hover:border-white/[.1] dark:hover:text-white"
-                                        >
-                                            ?
-                                            <span
-                                                class="hover:opacity-100 hover:visible opacity-0 transition-opacity
-                                                absolute z-10 px-2 bg-zinc-900 text-xs font-medium text-white
-                                                rounded shadow-sm dark:bg-zinc-700 duration-300 delay-100"
-                                                role="tooltip"
-                                            >
-                                                Emails sent every Fri 9am (GMT)
-                                            </span>
-                                        </button>
-                                </div>
                             </div>
                         )}
                     </div>
@@ -73,7 +60,7 @@ p-1 h-full fixed top-0 left-0 hidden lg:block no-scrollbar"
     <SideBarItems
         client:load
         subs={subs}
-        userEmail={userEmail}
+        userId={session?.user.userId}
         blogNameParam={blogNameParam}
     />
 </nav>
