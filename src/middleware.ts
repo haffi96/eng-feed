@@ -11,7 +11,7 @@ const redis = new Redis({
 
 const ratelimit = new Ratelimit({
     redis: redis,
-    limiter: Ratelimit.slidingWindow(5, "10 s"),
+    limiter: Ratelimit.slidingWindow(10, "10 s"),
 });
 
 async function rateLimitMiddleWare({ request, clientAddress }: APIContext, next: any) {

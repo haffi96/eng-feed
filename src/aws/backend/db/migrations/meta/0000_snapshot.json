@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "a71765b2-be10-41b9-a22a-d233a501f594",
+  "id": "85c289cd-bcd5-4042-a7f4-a880a45f23c5",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "all_blogs": {
@@ -23,6 +23,12 @@
         },
         "link": {
           "name": "link",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "https_link": {
+          "name": "https_link",
           "type": "varchar(256)",
           "primaryKey": false,
           "notNull": false
@@ -76,6 +82,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "title_hash": {
+          "name": "title_hash",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
         "link": {
           "name": "link",
           "type": "varchar(256)",
@@ -126,6 +138,104 @@
         }
       },
       "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "blog_posts_title_hash_unique": {
+          "name": "blog_posts_title_hash_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "title_hash"
+          ]
+        }
+      }
+    },
+    "user_key": {
+      "name": "user_key",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar(15)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hashed_password": {
+          "name": "hashed_password",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "user_key_user_id_auth_user_id_fk": {
+          "name": "user_key_user_id_auth_user_id_fk",
+          "tableFrom": "user_key",
+          "tableTo": "auth_user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "user_session": {
+      "name": "user_session",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(128)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar(15)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "active_expires": {
+          "name": "active_expires",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "idle_expires": {
+          "name": "idle_expires",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "user_session_user_id_auth_user_id_fk": {
+          "name": "user_session_user_id_auth_user_id_fk",
+          "tableFrom": "user_session",
+          "tableTo": "auth_user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
     "user_blogs": {
@@ -140,9 +250,9 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "integer",
+          "type": "varchar(15)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "blog_id": {
           "name": "blog_id",
@@ -162,10 +272,10 @@
         }
       },
       "foreignKeys": {
-        "user_blogs_user_id_users_id_fk": {
-          "name": "user_blogs_user_id_users_id_fk",
+        "user_blogs_user_id_auth_user_id_fk": {
+          "name": "user_blogs_user_id_auth_user_id_fk",
           "tableFrom": "user_blogs",
-          "tableTo": "users",
+          "tableTo": "auth_user",
           "columnsFrom": [
             "user_id"
           ],
@@ -204,9 +314,9 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "integer",
+          "type": "varchar(15)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "post_id": {
           "name": "post_id",
@@ -237,10 +347,10 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "user_posts_user_id_users_id_fk": {
-          "name": "user_posts_user_id_users_id_fk",
+        "user_posts_user_id_auth_user_id_fk": {
+          "name": "user_posts_user_id_auth_user_id_fk",
           "tableFrom": "user_posts",
-          "tableTo": "users",
+          "tableTo": "auth_user",
           "columnsFrom": [
             "user_id"
           ],
@@ -267,13 +377,13 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "users": {
-      "name": "users",
+    "auth_user": {
+      "name": "auth_user",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "varchar(15)",
           "primaryKey": true,
           "notNull": true
         },
@@ -288,23 +398,29 @@
           "name": "username",
           "type": "varchar(256)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "email": {
           "name": "email",
           "type": "varchar(256)",
           "primaryKey": false,
           "notNull": false
+        },
+        "email_preference": {
+          "name": "email_preference",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "provider": {
+          "name": "provider",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {
-        "username_idx": {
-          "name": "username_idx",
-          "columns": [
-            "username"
-          ],
-          "isUnique": true
-        },
         "email_idx": {
           "name": "email_idx",
           "columns": [
