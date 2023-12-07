@@ -3,7 +3,7 @@ import { lucia } from "lucia";
 import { astro } from "lucia/middleware";
 import { pg } from "@lucia-auth/adapter-postgresql";
 import { pool } from "@/aws/backend/db/session";
-import { github, google } from "@lucia-auth/oauth/providers";
+import { github } from "@lucia-auth/oauth/providers";
 
 // expect error (see next section)
 export const auth = lucia({

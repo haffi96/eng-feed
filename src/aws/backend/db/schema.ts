@@ -1,4 +1,4 @@
-import { integer, pgTable, serial, uniqueIndex, varchar, uuid, timestamp, boolean, bigint, text } from "drizzle-orm/pg-core"
+import { integer, pgTable, serial, uniqueIndex, varchar, uuid, timestamp, boolean, bigint } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 const utcTimestampSql = sql`TIMEZONE('utc', CURRENT_TIMESTAMP)`
