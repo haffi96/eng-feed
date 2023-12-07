@@ -4,18 +4,23 @@ export const prerender = true;
 import Sidebar from "./SideBar.astro";
 import MobileSideBar from "./MobileSideBar.tsx";
 import type { UserSubscription } from "../types";
-import { getSession } from "auth-astro/server";
+// import { getSession } from "auth-astro/server";
+const session = await Astro.locals.auth.validate();
 import {
     fetchUserBlogsWithSubscriptionStatus,
+    fetchUserById,
     fetchAllBlogs,
 } from "@aws/backend/db/query";
 
-const session = await getSession(Astro.request);
-const userEmail = session?.user?.email ? session.user.email : "";
+// const session = await getSession(Astro.request);
+const userId = session?.user?.userId ? session.user.userId : "";
+
+const user = userId !== "" ? await fetchUserById(userId) : undefined;
+const userEmail = user?.userEmail ? user.userEmail : undefined
 
 async function fetchBlogs() {
-    return userEmail !== ""
-        ? await fetchUserBlogsWithSubscriptionStatus(userEmail)
+    return userId !== ""
+        ? await fetchUserBlogsWithSubscriptionStatus(userId)
         : await fetchAllBlogs();
 }
 
@@ -47,10 +52,16 @@ const blogNameParam = Astro.url.searchParams.get("blog") as string | undefined;
 ---
 
 <div class="dark:text-black">
-    <Sidebar session={session} userEmail={userEmail} subs={subs} blogNameParam={blogNameParam} />
+    <Sidebar
+    userId={userId}
+    userEmail={userEmail}
+    subs={subs}
+    blogNameParam={blogNameParam}
+    />
     <MobileSideBar
         client:load
         session={session}
+        userId={userId}
         userEmail={userEmail}
         subs={subs}
         blogNameParam={blogNameParam}

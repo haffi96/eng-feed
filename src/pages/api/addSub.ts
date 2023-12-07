@@ -4,10 +4,10 @@ import { createUserBlogEntry } from "@aws/backend/db/query"
 export const POST: APIRoute = async ({ request }) => {
     const reqBody = await request.json();
 
-    const { userEmail, blogId } = reqBody;
+    const { userId, blogId } = reqBody;
 
     try {
-        await createUserBlogEntry(userEmail, blogId);
+        await createUserBlogEntry(userId, blogId);
     } catch (err) {
         console.log(err);
         return new Response(JSON.stringify({

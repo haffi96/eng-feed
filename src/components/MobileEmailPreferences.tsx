@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'preact/hooks';
-import type { ChangeEvent } from 'preact/compat';
+import type { ChangeEvent, TargetedEvent } from 'preact/compat';
 import SwitchButton from '@components/switchButton';
 
-const EmailPreferences = ({ userId, userEmail }: { userId: string, userEmail: string | undefined }) => {
+const MobileEmailPreferences = ({ userId, userEmail }: { userId: string, userEmail: string | undefined }) => {
     const [isChecked, setChecked] = useState(false);
-    const [email, setEmail] = useState(undefined);
+    const [email, setEmail] = useState(userEmail);
     const [editEmail, setEditEmail] = useState(false);
     const [emailMessage, setEmailMessage] = useState(false);
 
@@ -18,25 +18,6 @@ const EmailPreferences = ({ userId, userEmail }: { userId: string, userEmail: st
             });
     }, []);
 
-    const handleChange = async (event: ChangeEvent) => {
-        if (!userEmail) {
-            setEmailMessage(true);
-            return;
-        }
-
-
-        const newStatus = !isChecked;
-
-        const resp = await fetch('/api/setEmailPref', {
-            method: 'POST',
-            body: JSON.stringify({ userId: userId, newStatus: newStatus }),
-        });
-
-        if (resp.ok) {
-            setChecked(newStatus);
-        }
-    };
-
     const updateUserEmail = async () => {
         const resp = await fetch('/api/updateUserEmail', {
             method: 'POST',
@@ -48,8 +29,24 @@ const EmailPreferences = ({ userId, userEmail }: { userId: string, userEmail: st
         }
     }
 
+    const handleChange = async (event: ChangeEvent) => {
+        if (!userEmail) {
+            setEmailMessage(true);
+            return;
+        }
+
+        const resp = await fetch('/api/setEmailPref', {
+            method: 'POST',
+            body: JSON.stringify({ userId: userId }),
+        });
+
+        if (resp.ok) {
+            setChecked(!isChecked);
+        }
+    };
+
     return (
-        <div class="flex flex-col p-2 space-y-1 w-full">
+        <div class="flex flex-col p-2 space-y-1">
             <SwitchButton
                 checked={isChecked}
                 updatePref={handleChange}
@@ -97,27 +94,9 @@ const EmailPreferences = ({ userId, userEmail }: { userId: string, userEmail: st
                     )
                 }
             </div>
-            <div class="p-1 m-auto">
-                <button
-                    type="button"
-                    class="py-0.5 px-1 text-xs inline-flex justify-center items-center gap-2 rounded-full
-                                            bg-zinc-300 border border-zinc-500 text-black hover:bg-zinc-500
-                                            dark:bg-zinc-800 dark:text-white
-                                            dark:hover:border-white/[.1] dark:hover:text-white"
-                >
-                    i
-                    <span
-                        class="hover:opacity-100 hover:visible opacity-0 transition-opacity
-                                                absolute z-10 px-2 bg-zinc-900 text-xs font-medium text-white
-                                                rounded shadow-sm dark:bg-zinc-700 duration-300 delay-100"
-                        role="tooltip"
-                    >
-                        Emails sent every Fri 9am (GMT)
-                    </span>
-                </button>
-            </div>
+            <p class="text-xs">Emails sent every Fri 9am (GMT)</p>
         </div>
     );
 };
 
-export default EmailPreferences;
+export default MobileEmailPreferences;

@@ -2,52 +2,36 @@
 import Layout from "../../layouts/Layout.astro";
 import ThemeButton from "../../components/ThemeToggle";
 import BlogView from "../../components/BlogView.astro";
-import { getSession } from "auth-astro/server";
+// import { getSession } from "auth-astro/server";
 import PageNavButtons from "@components/PageNavButtons.astro";
+const session = await Astro.locals.auth.validate();
+
 import {
-    upsertUserEntry,
     fetchAllPostsForUser,
     fetchAllPosts,
 } from "@aws/backend/db/query";
 
 const { page } = Astro.params;
 
-// Get session and userEmail. Redirect to login if session is expired
-const session = await getSession(Astro.request);
-
 if (session && Date.parse(session.expires) < Date.now()) {
     return Astro.redirect("/login");
 }
-const userEmail = session?.user?.email || undefined;
-const userName = session?.user?.name || undefined;
-
-// Upsert user with async request only on first page
-async function upsertUser(email: string, userName: string) {
-    try {
-        await upsertUserEntry({ email, username: userName });
-    } catch (err) {
-        console.log(err);
-    }
-}
-
-if (Number(page) === 1) {
-    userEmail && userName && (await upsertUser(userEmail, userName));
-}
+const userId = session?.user?.userId || undefined;
 
 // Fetch posts for page
-async function fetchPostsForPage(page: number, userEmail?: string) {
+async function fetchPostsForPage(page: number, userId?: string) {
     const limit = 10;
     const offset = (page - 1) * limit;
 
-    return userEmail
-        ? await fetchAllPostsForUser({ userEmail, offset, limit })
+    return userId
+        ? await fetchAllPostsForUser({ userId, offset, limit })
         : await fetchAllPosts({ offset, limit });
 }
 
 // Page logic
 const pageNumber = Number(page);
 const prevPage = pageNumber !== 1 ? pageNumber - 1 : 1;
-const posts = await fetchPostsForPage(pageNumber, userEmail);
+const posts = await fetchPostsForPage(pageNumber, userId);
 const nextPage = posts.length > 1 ? pageNumber + 1 : pageNumber;
 ---
 

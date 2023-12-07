@@ -22,21 +22,25 @@ export const upsertUserEntry = async (newUserParams: typeof users.$inferInsert) 
     }
 }
 
-export const fetchUserById = async (userId: number) => {
-    const result = await db.select({ userUuid: users.user_uuid, emailPref: users.email_preference }).from(users).where(eq(users.id, userId))
+export const fetchUserById = async (userId: string) => {
+    const result = await db.select({ userUuid: users.user_uuid, userEmail: users.email, emailPref: users.email_preference, userId: users.id }).from(users).where(eq(users.id, userId))
     return result[0]
 }
 
-export const setUserEmailPref = async (email: string) => {
-    const result = await db.select({ emailPref: users.email_preference }).from(users).where(eq(users.email, email))
+export const setUserEmailPref = async (userId: string, newStatus: boolean) => {
+    // const result = await db.select({ emailPref: users.email_preference }).from(users).where(eq(users.id, userId))
 
-    const currentPref = result[0].emailPref
+    // const currentPref = result[0].emailPref
 
-    await db.update(users).set({ email_preference: !currentPref }).where(eq(users.email, email))
+    await db.update(users).set({ email_preference: newStatus }).where(eq(users.id, userId))
 }
 
-export const getUserEmailPref = async (email: string) => {
-    const result = await db.select({ emailPref: users.email_preference }).from(users).where(eq(users.email, email))
+export const updateUserEmail = async (userId: string, newEmail: string) => {
+    await db.update(users).set({ email: newEmail }).where(eq(users.id, userId))
+}
+
+export const getUserEmailPref = async (userId: string) => {
+    const result = await db.select({ emailPref: users.email_preference }).from(users).where(eq(users.id, userId))
     return result[0].emailPref
 }
 
@@ -60,17 +64,17 @@ export const fetchUserSubscribedBlogs = async (userEmail: string) => {
         .innerJoin(sq, eq(allBlogs.id, sq.blog_id))
 }
 
-export const fetchUserBlogsWithSubscriptionStatus = async (userEmail: string) => {
-    const userQuery = db
-        .select({ userId: users.id })
-        .from(users)
-        .where(eq(users.email, userEmail))
-        .as("userQuery")
+export const fetchUserBlogsWithSubscriptionStatus = async (userId: string) => {
+    // const userQuery = db
+    //     .select({ userId: users.id })
+    //     .from(users)
+    //     .where(eq(users.id, userEmail))
+    //     .as("userQuery")
 
     const sq = db
         .select({ blog_id: userBlogs.blog_id })
         .from(userBlogs)
-        .innerJoin(userQuery, eq(userBlogs.user_id, userQuery.userId))
+        .where(eq(userBlogs.user_id, userId))
         .as("sq")
 
     return await db
@@ -185,15 +189,14 @@ export const fetchPostsByUuids = async (postUuid: string[]) => {
 
 // UserBlogs table
 interface QueryAllPostsParams {
-    userEmail: string;
+    userId: string;
     offset: number;
     limit: number;
 }
 
-export const fetchAllPostsForUser = async ({ userEmail, offset, limit }: QueryAllPostsParams) => {
-    const userQuery = db.select({ userId: users.id }).from(users).where(eq(users.email, userEmail)).as("userQuery")
+export const fetchAllPostsForUser = async ({ userId, offset, limit }: QueryAllPostsParams) => {
 
-    const sq = db.select({ blog_id: userBlogs.blog_id }).from(userBlogs).innerJoin(userQuery, eq(userBlogs.user_id, userQuery.userId)).as("sq")
+    const sq = db.select({ blog_id: userBlogs.blog_id }).from(userBlogs).where(eq(userBlogs.user_id, userId)).as("sq")
 
     return await db.select({
         postId: blogPosts.id,
@@ -217,31 +220,17 @@ export const fetchUsersForBlog = async (blogId: number | null) => {
     return await db.select({ userId: userBlogs.user_id }).from(userBlogs).where(eq(userBlogs.blog_id, blogId!))
 }
 
-export const createUserBlogEntry = async (userEmail: string, blogId: number) => {
-    const userQuery = db.select({ userId: users.id }).from(users).where(eq(users.email, userEmail)).as("userQuery")
-
-    const result = await db.select({ userId: userQuery.userId }).from(userQuery)
-
-    const { userId } = result[0]
-
+export const createUserBlogEntry = async (userId: string, blogId: number) => {
     await db.insert(userBlogs).values({ user_id: userId, blog_id: blogId })
 }
 
-export const deleteUserBlogEntry = async (userEmail: string, blogId: number) => {
-    const userQuery = db.select({ userId: users.id }).from(users).where(eq(users.email, userEmail)).as("userQuery")
-
-    const result = await db.select({ userId: userQuery.userId }).from(userQuery)
-
-    const { userId } = result[0]
-
+export const deleteUserBlogEntry = async (userId: string, blogId: number) => {
     const deleted = await db.delete(userBlogs).where(and(eq(userBlogs.user_id, userId), eq(userBlogs.blog_id, blogId)))
-
     return deleted.rowCount
-
 }
 
 // UserPosts table
-export const createUserPostEntry = async (userId: number, postId: number) => {
+export const createUserPostEntry = async (userId: string, postId: number) => {
     return await db.insert(userPosts).values({ user_id: userId, post_id: postId })
 }
 
@@ -344,7 +333,7 @@ export const fetchUsersToNotify = async () => {
 //     console.log(res);
 // });
 
-// fetchUserBlogsWithSubscriptionStatus("haffimazhar96@gmail.com").then((res) => {
+// fetchUserBlogsWithSubscriptionStatus("s9kltm0434o6lw2").then((res) => {
 //     console.log(res)
 // })
 

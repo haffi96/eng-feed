@@ -1,19 +1,23 @@
-import { integer, pgTable, serial, uniqueIndex, varchar, uuid, timestamp, boolean } from "drizzle-orm/pg-core"
+import { integer, pgTable, serial, uniqueIndex, varchar, uuid, timestamp, boolean, bigint } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 const utcTimestampSql = sql`TIMEZONE('utc', CURRENT_TIMESTAMP)`
 
 const uuidSql = sql`extensions.uuid_generate_v4()`
 
-export const users = pgTable("users", {
-    id: serial("id").primaryKey(),
+export const users = pgTable("auth_user", {
+    id: varchar("id", {
+        length: 15 // change this when using custom user ids
+    }).primaryKey(),
     user_uuid: uuid("user_uuid").notNull().default(uuidSql),
-    username: varchar("username", { length: 256 }),
+    username: varchar("username", {
+        length: 256
+    }).notNull(),
     email: varchar("email", { length: 256 }),
     email_preference: boolean("email_preference").notNull().default(false),
+    provider: varchar("provider", { length: 256 }),
 }, (users) => {
     return {
-        usernameIndex: uniqueIndex("username_idx").on(users.username),
         emailIndex: uniqueIndex("email_idx").on(users.email),
         uuidIndex: uniqueIndex("uuid_idx").on(users.user_uuid),
     }
@@ -35,7 +39,11 @@ export const allBlogs = pgTable("all_blogs", {
 
 export const userBlogs = pgTable("user_blogs", {
     id: serial("id").primaryKey(),
-    user_id: integer("user_id").references(() => users.id),
+    user_id: varchar("user_id", {
+        length: 15
+    })
+        .notNull()
+        .references(() => users.id),
     blog_id: integer("blog_id").references(() => allBlogs.id),
 }, (userBlogs) => {
     return {
@@ -62,7 +70,11 @@ export const blogPosts = pgTable("blog_posts", {
 
 export const userPosts = pgTable("user_posts", {
     id: serial("id").primaryKey(),
-    user_id: integer("user_id").references(() => users.id),
+    user_id: varchar("user_id", {
+        length: 15
+    })
+        .notNull()
+        .references(() => users.id),
     post_id: integer("post_id").references(() => blogPosts.id),
     emailed: boolean("emailed").notNull().default(false),
     notificationDate: timestamp("notification_date", { mode: "date" })
@@ -70,3 +82,34 @@ export const userPosts = pgTable("user_posts", {
         .default(utcTimestampSql),
     updatedAt: timestamp("updated_at"),
 })
+
+export const session = pgTable("user_session", {
+    id: varchar("id", {
+        length: 128
+    }).primaryKey(),
+    userId: varchar("user_id", {
+        length: 15
+    })
+        .notNull()
+        .references(() => users.id),
+    activeExpires: bigint("active_expires", {
+        mode: "number"
+    }).notNull(),
+    idleExpires: bigint("idle_expires", {
+        mode: "number"
+    }).notNull()
+});
+
+export const key = pgTable("user_key", {
+    id: varchar("id", {
+        length: 255
+    }).primaryKey(),
+    userId: varchar("user_id", {
+        length: 15
+    })
+        .notNull()
+        .references(() => users.id),
+    hashedPassword: varchar("hashed_password", {
+        length: 255
+    })
+});

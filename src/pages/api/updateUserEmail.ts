@@ -1,13 +1,13 @@
 import type { APIRoute } from "astro"
-import { deleteUserBlogEntry } from "@aws/backend/db/query"
+import { updateUserEmail } from "@aws/backend/db/query"
 
 export const POST: APIRoute = async ({ request }) => {
     const reqBody = await request.json();
 
-    const { userId, blogId } = reqBody;
+    const { userId, newEmail } = reqBody;
 
     try {
-        await deleteUserBlogEntry(userId, blogId);
+        await updateUserEmail(userId, newEmail);
     } catch (err) {
         console.log(err);
         return new Response(JSON.stringify({
@@ -17,7 +17,7 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     return new Response(JSON.stringify({
-        message: "Unsubscribed"
+        message: "Updated email preference"
     })
     )
 }
