@@ -23,8 +23,7 @@ async function rateLimitMiddleWare({ request, clientAddress }: APIContext, next:
         );
 
         if (!success && remaining === 0) {
-            console.error("rate limit exceeded");
-            const res = new Response("rate limit exceeded", { status: 429 });
+            const res = new Response(JSON.stringify({ "error": "rate limit exceeded" }), { status: 429 });
             res.headers.set("X-RateLimit-Limit", limit.toString());
             res.headers.set("X-RateLimit-Remaining", remaining.toString());
             res.headers.set("X-RateLimit-Reset", reset.toString());
