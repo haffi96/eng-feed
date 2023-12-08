@@ -1,37 +1,39 @@
 ---
-export const prerender = true;
+export const prerender = true
 
-import SideNav from "@components/SideNav.astro";
-import "../styles/globals.css";
-import { ViewTransitions } from "astro:transitions";
+import SideNav from "@components/SideNav.astro"
+import "../styles/globals.css"
+import { ViewTransitions } from "astro:transitions"
 interface Props {
-    title: string;
+  title: string
 }
 
-const { title } = Astro.props;
+const { title } = Astro.props
 ---
 
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="description" content="Astro description" />
-        <meta name="viewport" content="width=device-width" />
-        <link rel="icon" type="image/png" href="/logo.png" />
-        <meta name="generator" content={Astro.generator} />
-        <ViewTransitions />
-        <title>{title}</title>
-    </head>
-    <body class="bg-zinc-100 dark:bg-zinc-800 dark:text-zinc-300 font-mono no-scrollbar">
-        <div class="flex flex-row lg:space-x-60 items-stretch">
-            <SideNav />
-            <main
-                class="min-h-screen lg:p-20 mx-auto w-full flex flex-col justify-between"
-            >
-                <article>
-                    <slot />
-                </article>
-            </main>
-        </div>
-    </body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Astro description" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <meta name="generator" content={Astro.generator} />
+    <ViewTransitions />
+    <title>{title}</title>
+  </head>
+  <body
+    class="bg-zinc-100 dark:bg-zinc-800 dark:text-zinc-300 font-mono no-scrollbar"
+  >
+    <div class="flex flex-row lg:space-x-60 items-stretch">
+      <SideNav />
+      <main
+        class="min-h-screen lg:p-20 mx-auto w-full flex flex-col justify-between"
+      >
+        <article>
+          <slot />
+        </article>
+      </main>
+    </div>
+  </body>
 </html>

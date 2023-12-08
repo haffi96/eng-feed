@@ -1,66 +1,64 @@
 ---
-import SideBarItems from "./SideBarItems.tsx";
-// import { SignOut } from "auth-astro/components";
-import type { UserSubscription } from "../types";
-// import type { Session } from "@auth/core/types";
-import ProfileImage from "./ProfileImage.tsx";
-import EmailPreferences from "@components/EmailPreferences";
-import type { Session } from "lucia";
-const session = await Astro.locals.auth.validate();
+import EmailPreferences from "@components/EmailPreferences"
+import UserInfo from "@components/UserInfo"
+import type { UserSubscription } from "../types"
+import SideBarItems from "./SideBarItems.tsx"
+const session = await Astro.locals.auth.validate()
 
 interface Props {
-    userId: string;
-    userEmail: string | undefined;
-    subs: UserSubscription[];
-    blogNameParam?: string;
+  userId: string
+  userEmail: string | undefined
+  subs: UserSubscription[]
+  blogNameParam?: string
 }
 
-const { userId, userEmail, subs, blogNameParam } = Astro.props;
+const { userId, userEmail, subs, blogNameParam } = Astro.props
 ---
 
 <nav
-    class="bg-zinc-300 dark:bg-zinc-500 w-1/4 lg:w-1/6
+  class="bg-zinc-300 dark:bg-zinc-500 w-1/4 lg:w-1/6
 text-center overflow-hidden overflow-y-scroll space-y-5
 p-1 h-full fixed top-0 left-0 hidden lg:block no-scrollbar"
 >
-    <div></div>
-    <div>
-        {
-            session ? (
-                <>
-                    <ProfileImage session={session} />
-                    <div class="flex flex-col w-2/3 m-auto space-y-2">
-                        <a
-                        href="/api/logout"
-                        class="hover:bg-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100"
-                        >
-                            Sign out
-                        </a>
-                        {session && (
-                            <div class="flex flex-row items-center justify-center">
-                                <EmailPreferences
-                                    client:load
-                                    userId={userId}
-                                    userEmail={userEmail}
-                                />
-                            </div>
-                        )}
-                    </div>
-                </>
-            ) : (
-                <a
-                    class="hover:bg-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100"
-                    href="/login"
-                >
-                    Sign in
-                </a>
-            )
-        }
-    </div>
-    <SideBarItems
-        client:load
-        subs={subs}
-        userId={session?.user.userId}
-        blogNameParam={blogNameParam}
-    />
+  <div></div>
+  <div>
+    {
+      session ? (
+        <>
+          <UserInfo session={session} />
+          <div class="flex flex-col w-2/3 m-auto space-y-2">
+            <a
+              href="/api/logout"
+              class="hover:bg-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100"
+            >
+              Sign out
+            </a>
+            {session && (
+              <div class="flex flex-row items-center justify-center">
+                <EmailPreferences
+                  client:load
+                  userId={userId}
+                  userEmail={userEmail}
+                />
+              </div>
+            )}
+          </div>
+        </>
+      ) : (
+        <a
+          class="hover:bg-zinc-600 rounded-lg p-2 shadow-md transition:ease-in duration-100"
+          href="/login"
+        >
+          Sign in
+        </a>
+      )
+    }
+  </div>
+  <SideBarItems
+    client:load
+    subs={subs}
+    userId={session?.user.userId}
+    blogNameParam={blogNameParam}
+  />
 </nav>
+ ./UserInfo.tsx

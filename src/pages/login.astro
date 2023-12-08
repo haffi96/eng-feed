@@ -1,31 +1,31 @@
 ---
-export const prerender = false;
+export const prerender = false
 
-import ThemeButton from "@components/ThemeToggle";
-import { ViewTransitions } from "astro:transitions";
+import ThemeButton from "@components/ThemeToggle"
+import { ViewTransitions } from "astro:transitions"
 ---
 
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="description" content="Astro description" />
-        <meta name="viewport" content="width=device-width" />
-        <link rel="icon" type="image/png" href="/logo.png" />
-        <meta name="generator" content={Astro.generator} />
-        <ViewTransitions />
-        <title>Log in</title>
-    </head>
-    <body
-        class="bg-zinc-100 dark:bg-zinc-800 dark:text-zinc-300 justify-center items-center flex flex-col h-screen"
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Astro description" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <meta name="generator" content={Astro.generator} />
+    <ViewTransitions />
+    <title>Log in</title>
+  </head>
+  <body
+    class="bg-zinc-100 dark:bg-zinc-800 dark:text-zinc-300 justify-center items-center flex flex-col h-screen"
+  >
+    <div class="text-center">
+      <ThemeButton client:only />
+    </div>
+    <div
+      class="flex flex-col w-full h-full font-mono justify-center items-center space-y-4"
     >
-        <div class="text-center">
-            <ThemeButton client:only />
-        </div>
-        <div
-            class="flex flex-col w-full h-full font-mono justify-center items-center space-y-4"
-        >
-            <!-- <SignIn
+      <!-- <SignIn
                 class="flex flex-row bg-[#4285F4] font-roboto items-center text-white p-1 rounded-md"
                 provider="google"
             >
@@ -44,20 +44,17 @@ import { ViewTransitions } from "astro:transitions";
                 />
                 <p class="p-2">Sign in with Github</p>
             </SignIn> -->
-            <div class="flex flex-row bg-zinc-500 font-roboto items-center text-white px-3.5 py-1.5 rounded-md">
-                <img
-                    width="30px"
-                    height="30px"
-                    src="/github-mark.png"
-                    alt="github-official-logo"
-                />
-                <a
-                href="/login/github"
-                class="p-2"
-                >
-                Sign in with GitHub
-                </a>
-            </div>
-        </div>
-    </body>
+      <div
+        class="flex flex-row bg-zinc-500 font-roboto items-center text-white px-3.5 py-1.5 rounded-md"
+      >
+        <img
+          width="30px"
+          height="30px"
+          src="/github-mark.png"
+          alt="github-official-logo"
+        />
+        <a href="/login/github" class="p-2"> Sign in with GitHub</a>
+      </div>
+    </div>
+  </body>
 </html>

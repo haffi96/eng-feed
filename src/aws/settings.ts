@@ -1,3 +1,3 @@
 export const settings = {
-    PUBLISHED_DELTA: 7,
+  PUBLISHED_DELTA: 7,
 }

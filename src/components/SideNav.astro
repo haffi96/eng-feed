@@ -1,69 +1,67 @@
 ---
-export const prerender = true;
+export const prerender = true
 
-import Sidebar from "./SideBar.astro";
-import MobileSideBar from "./MobileSideBar.tsx";
-import type { UserSubscription } from "../types";
+import Sidebar from "./SideBar.astro"
+import MobileSideBar from "./MobileSideBar.tsx"
+import type { UserSubscription } from "../types"
 // import { getSession } from "auth-astro/server";
-const session = await Astro.locals.auth.validate();
+const session = await Astro.locals.auth.validate()
 import {
-    fetchUserBlogsWithSubscriptionStatus,
-    fetchUserById,
-    fetchAllBlogs,
-} from "@aws/backend/db/query";
+  fetchUserBlogsWithSubscriptionStatus,
+  fetchUserById,
+  fetchAllBlogs,
+} from "@aws/backend/db/query"
 
 // const session = await getSession(Astro.request);
-const userId = session?.user?.userId ? session.user.userId : "";
+const userId = session?.user?.userId ? session.user.userId : ""
 
-const user = userId !== "" ? await fetchUserById(userId) : undefined;
+const user = userId !== "" ? await fetchUserById(userId) : undefined
 const userEmail = user?.userEmail ? user.userEmail : undefined
 
 async function fetchBlogs() {
-    return userId !== ""
-        ? await fetchUserBlogsWithSubscriptionStatus(userId)
-        : await fetchAllBlogs();
+  return userId !== ""
+    ? await fetchUserBlogsWithSubscriptionStatus(userId)
+    : await fetchAllBlogs()
 }
 
-const subs = (await fetchBlogs()) as UserSubscription[];
+const subs = (await fetchBlogs()) as UserSubscription[]
 
 // Sort by subscribed
-subs.sort((a, b) =>
-    a.subscribed === b.subscribed ? 0 : a.subscribed ? -1 : 1,
-);
+subs.sort((a, b) => (a.subscribed === b.subscribed ? 0 : a.subscribed ? -1 : 1))
 
 // Push filtered blog to the top
-const blogName = Astro.url.searchParams.get("blog");
+const blogName = Astro.url.searchParams.get("blog")
 if (blogName) {
-    const blogIndex = subs.findIndex((sub) => sub.companyName === blogName);
-    if (blogIndex !== -1) {
-        subs.unshift(subs.splice(blogIndex, 1)[0]);
-    }
+  const blogIndex = subs.findIndex((sub) => sub.companyName === blogName)
+  if (blogIndex !== -1) {
+    subs.unshift(subs.splice(blogIndex, 1)[0])
+  }
 }
 
 const comingSoonEntry = {
-    blogId: 1000,
-    blogLink: "/",
-    companyName: "More coming soon!",
-    subscribed: false,
-};
+  blogId: 1000,
+  blogLink: "/",
+  companyName: "More coming soon!",
+  subscribed: false,
+}
 
-subs.push(comingSoonEntry);
-const blogNameParam = Astro.url.searchParams.get("blog") as string | undefined;
+subs.push(comingSoonEntry)
+const blogNameParam = Astro.url.searchParams.get("blog") as string | undefined
 ---
 
 <div class="dark:text-black">
-    <Sidebar
+  <Sidebar
     userId={userId}
     userEmail={userEmail}
     subs={subs}
     blogNameParam={blogNameParam}
-    />
-    <MobileSideBar
-        client:load
-        session={session}
-        userId={userId}
-        userEmail={userEmail}
-        subs={subs}
-        blogNameParam={blogNameParam}
-    />
+  />
+  <MobileSideBar
+    client:load
+    session={session}
+    userId={userId}
+    userEmail={userEmail}
+    subs={subs}
+    blogNameParam={blogNameParam}
+  />
 </div>

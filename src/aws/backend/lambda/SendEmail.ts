@@ -1,31 +1,40 @@
 import type { APIGatewayProxyResult, SQSEvent } from "aws-lambda"
-import { fetchUserEmailByUuid, fetchPostsByUuids, updateUserPostEntry } from "../db/query"
+import {
+  fetchPostsByUuids,
+  fetchUserEmailByUuid,
+  updateUserPostEntry,
+} from "../db/query"
 
-export const handler = async (event: SQSEvent): Promise<APIGatewayProxyResult> => {
+export const handler = async (
+  event: SQSEvent
+): Promise<APIGatewayProxyResult> => {
+  const eventBody = event.Records[0].body
 
-    const eventBody = event.Records[0].body
+  const eventBodyJson = JSON.parse(eventBody)
 
-    const eventBodyJson = JSON.parse(eventBody)
+  const userEmail = await fetchUserEmailByUuid(eventBodyJson.userId)
+  const postIds = eventBodyJson.postsIds as string[]
 
-    const userEmail = await fetchUserEmailByUuid(eventBodyJson.userId)
-    const postIds = eventBodyJson.postsIds as string[]
+  const postRecords = await fetchPostsByUuids(postIds)
 
-    const postRecords = await fetchPostsByUuids(postIds)
+  // Limit the number of posts to 3
+  const maxPosts = 3
+  const limitedPostRecords = postRecords.slice(0, maxPosts)
 
-    // Limit the number of posts to 3
-    const maxPosts = 3
-    const limitedPostRecords = postRecords.slice(0, maxPosts)
+  // Construct HTML content for the limited number of blog posts
+  const blogPostHTML = limitedPostRecords
+    .map((post) => {
+      // Convert the published date to a user-friendly format
+      // prettier-ignore
+      const publishedDate = post.publishedDate
+        ? new Date(post.publishedDate).toLocaleDateString(undefined, {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })
+        : ""
 
-    // Construct HTML content for the limited number of blog posts
-    const blogPostHTML = limitedPostRecords.map((post) => {
-        // Convert the published date to a user-friendly format
-        const publishedDate = post.publishedDate ? new Date(post.publishedDate).toLocaleDateString(undefined, {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-        }) : ""
-
-        return `
+      return `
             <div style="border: 1px solid #ccc; padding: 10px; margin: 10px; text-align: center;">
                 <h1>${post.companyName}</h1>
                 <h2>${post.title}</h2>
@@ -38,10 +47,11 @@ export const handler = async (event: SQSEvent): Promise<APIGatewayProxyResult> =
                 </a>
             </div>
         `
-    }).join("") // Join all the limited blog post HTML content together
+    })
+    .join("") // Join all the limited blog post HTML content together
 
-    // Create the "See more posts from this week" button
-    const seeMoreButtonHTML = `
+  // Create the "See more posts from this week" button
+  const seeMoreButtonHTML = `
             <div style="text-align: center;">
                 <a href="https://www.devfeed.blog" style="text-decoration: none;">
                     <button style="background-color: #007BFF; color: white; border: none; padding: 10px; cursor: pointer;">
@@ -51,7 +61,7 @@ export const handler = async (event: SQSEvent): Promise<APIGatewayProxyResult> =
             </div>
           `
 
-    const emailHtml = `
+  const emailHtml = `
         <html>
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <style>
@@ -87,39 +97,39 @@ export const handler = async (event: SQSEvent): Promise<APIGatewayProxyResult> =
         </html>
     `
 
-    const res = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
-        },
-        body: JSON.stringify({
-            from: "latest@devfeed.blog",
-            to: [userEmail],
-            subject: "Latest Engineering Blogs",
-            html: emailHtml,
-        }),
-    })
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+    },
+    body: JSON.stringify({
+      from: "latest@devfeed.blog",
+      to: [userEmail],
+      subject: "Latest Engineering Blogs",
+      html: emailHtml,
+    }),
+  })
 
-    if (res.ok) {
-        await updateUserPostEntry(eventBodyJson.userId, postIds)
-    }
+  if (res.ok) {
+    await updateUserPostEntry(eventBodyJson.userId, postIds)
+  }
 
-    try {
-        // fetch is available with Node.js 18
-        return {
-            statusCode: 200,
-            body: JSON.stringify({
-                message: "Successfully sent email",
-            }),
-        }
-    } catch (err) {
-        console.log(err)
-        return {
-            statusCode: 500,
-            body: JSON.stringify({
-                message: "some error happened",
-            }),
-        }
+  try {
+    // fetch is available with Node.js 18
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        message: "Successfully sent email",
+      }),
     }
+  } catch (err) {
+    console.log(err)
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        message: "some error happened",
+      }),
+    }
+  }
 }

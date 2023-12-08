@@ -49,9 +49,7 @@
       "indexes": {
         "uuid_idx": {
           "name": "uuid_idx",
-          "columns": [
-            "blog_uuid"
-          ],
+          "columns": ["blog_uuid"],
           "isUnique": true
         }
       },
@@ -116,9 +114,7 @@
       "indexes": {
         "uuid_idx": {
           "name": "uuid_idx",
-          "columns": [
-            "post_uuid"
-          ],
+          "columns": ["post_uuid"],
           "isUnique": true
         }
       },
@@ -127,12 +123,8 @@
           "name": "blog_posts_blog_id_all_blogs_id_fk",
           "tableFrom": "blog_posts",
           "tableTo": "all_blogs",
-          "columnsFrom": [
-            "blog_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["blog_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -142,9 +134,7 @@
         "blog_posts_title_hash_unique": {
           "name": "blog_posts_title_hash_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "title_hash"
-          ]
+          "columns": ["title_hash"]
         }
       }
     },
@@ -177,12 +167,8 @@
           "name": "user_key_user_id_auth_user_id_fk",
           "tableFrom": "user_key",
           "tableTo": "auth_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -225,12 +211,8 @@
           "name": "user_session_user_id_auth_user_id_fk",
           "tableFrom": "user_session",
           "tableTo": "auth_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -264,10 +246,7 @@
       "indexes": {
         "user_blog_idx": {
           "name": "user_blog_idx",
-          "columns": [
-            "user_id",
-            "blog_id"
-          ],
+          "columns": ["user_id", "blog_id"],
           "isUnique": true
         }
       },
@@ -276,12 +255,8 @@
           "name": "user_blogs_user_id_auth_user_id_fk",
           "tableFrom": "user_blogs",
           "tableTo": "auth_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -289,12 +264,8 @@
           "name": "user_blogs_blog_id_all_blogs_id_fk",
           "tableFrom": "user_blogs",
           "tableTo": "all_blogs",
-          "columnsFrom": [
-            "blog_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["blog_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -351,12 +322,8 @@
           "name": "user_posts_user_id_auth_user_id_fk",
           "tableFrom": "user_posts",
           "tableTo": "auth_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -364,12 +331,8 @@
           "name": "user_posts_post_id_blog_posts_id_fk",
           "tableFrom": "user_posts",
           "tableTo": "blog_posts",
-          "columnsFrom": [
-            "post_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["post_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -423,16 +386,12 @@
       "indexes": {
         "email_idx": {
           "name": "email_idx",
-          "columns": [
-            "email"
-          ],
+          "columns": ["email"],
           "isUnique": true
         },
         "uuid_idx": {
           "name": "uuid_idx",
-          "columns": [
-            "user_uuid"
-          ],
+          "columns": ["user_uuid"],
           "isUnique": true
         }
       },

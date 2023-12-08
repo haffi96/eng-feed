@@ -1,77 +1,71 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import ThemeButton from "../../components/ThemeToggle";
-import BlogView from "../../components/BlogView.astro";
+import Layout from "../../layouts/Layout.astro"
+import ThemeButton from "../../components/ThemeToggle"
+import BlogView from "../../components/BlogView.astro"
 // import { getSession } from "auth-astro/server";
-import PageNavButtons from "@components/PageNavButtons.astro";
-const session = await Astro.locals.auth.validate();
+import PageNavButtons from "@components/PageNavButtons.astro"
+const session = await Astro.locals.auth.validate()
 
-import {
-    fetchAllPostsForUser,
-    fetchAllPosts,
-} from "@aws/backend/db/query";
+import { fetchAllPostsForUser, fetchAllPosts } from "@aws/backend/db/query"
 
-const { page } = Astro.params;
+const { page } = Astro.params
 
 if (session && Date.parse(session.expires) < Date.now()) {
-    return Astro.redirect("/login");
+  return Astro.redirect("/login")
 }
-const userId = session?.user?.userId || undefined;
+const userId = session?.user?.userId || undefined
 
 // Fetch posts for page
 async function fetchPostsForPage(page: number, userId?: string) {
-    const limit = 10;
-    const offset = (page - 1) * limit;
+  const limit = 10
+  const offset = (page - 1) * limit
 
-    return userId
-        ? await fetchAllPostsForUser({ userId, offset, limit })
-        : await fetchAllPosts({ offset, limit });
+  return userId
+    ? await fetchAllPostsForUser({ userId, offset, limit })
+    : await fetchAllPosts({ offset, limit })
 }
 
 // Page logic
-const pageNumber = Number(page);
-const prevPage = pageNumber !== 1 ? pageNumber - 1 : 1;
-const posts = await fetchPostsForPage(pageNumber, userId);
-const nextPage = posts.length > 1 ? pageNumber + 1 : pageNumber;
+const pageNumber = Number(page)
+const prevPage = pageNumber !== 1 ? pageNumber - 1 : 1
+const posts = await fetchPostsForPage(pageNumber, userId)
+const nextPage = posts.length > 1 ? pageNumber + 1 : pageNumber
 ---
 
 <Layout title="Engineering blogs">
-    <main>
-        <div class="text-center">
-            <ThemeButton client:only />
-        </div>
-        <div class="items-center text-center p-5">
-            <div>
-                <a href="/posts/1">
-                    <h1 class="text-xl font-extrabold p-2">Latest posts</h1>
-                </a>
-            </div>
-            <div class="mt-5">
-                {
-                    posts.length > 1 && (
-                        <PageNavButtons
-                            prevPage={prevPage}
-                            nextPage={nextPage}
-                        />
-                    )
-                }
-            </div>
-            {
-                posts.length > 1 ? (
-                    posts.map((p: any) => {
-                        return <BlogView blog={p} />;
-                    })
-                ) : (
-                    <div class="text-lg p-10">No posts to show...</div>
-                )
-            }
-        </div>
-        <div class="p-5 mb-5">
-            {
-                posts.length > 1 && (
-                    <PageNavButtons prevPage={prevPage} nextPage={nextPage} />
-                )
-            }
-        </div>
-    </main>
+  <main>
+    <div class="text-center">
+      <ThemeButton client:only />
+    </div>
+    <div class="items-center text-center p-5">
+      <div>
+        <a href="/posts/1">
+          <h1 class="text-xl font-extrabold p-2">Latest posts</h1>
+        </a>
+      </div>
+      <div class="mt-5">
+        {
+          posts.length > 1 && (
+            <PageNavButtons prevPage={prevPage} nextPage={nextPage} />
+          )
+        }
+      </div>
+      {
+        posts.length > 1 ? (
+          posts.map((p: any) => {
+            return <BlogView blog={p} />
+          })
+        ) : (
+          <div class="text-lg p-10">No posts to show...</div>
+        )
+      }
+    </div>
+    <div class="p-5 mb-5">
+      {
+        posts.length > 1 && (
+          <PageNavButtons prevPage={prevPage} nextPage={nextPage} />
+        )
+      }
+    </div>
+  </main>
 </Layout>

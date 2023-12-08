@@ -1,31 +1,30 @@
 {
-    "files.autoSave": "onFocusChange",
-    "editor.snippetSuggestions": "inline",
-    "editor.suggest.snippetsPreventQuickSuggestions": false,
-    "editor.suggest.showSnippets": true,
-    "editor.tabCompletion": "on",
-    "editor.formatOnSaveMode": "modifications",
-    "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
-    },
-    "eslint.validate": [
-        "typescript"
-    ],
-    "window.commandCenter": true,
-    "eslint.format.enable": true,
-    "editor.formatOnSave": true,
-    "typescript.tsdk": "node_modules/typescript/lib",
-    "typescript.enablePromptUseWorkspaceTsdk": true,
-    "files.associations": {
-        "*.mdx": "markdown"
-    },
-    "emmet.includeLanguages": {
-        "markdown": "html",
-        "mdx": "html"
-    },
-    "auto-close-tag.activationOnLanguage": [
-        "mdx",
-        "astro",
-        "markdown"
-    ],
+  "files.autoSave": "onFocusChange",
+  "editor.snippetSuggestions": "inline",
+  "editor.suggest.snippetsPreventQuickSuggestions": false,
+  "editor.suggest.showSnippets": true,
+  "editor.tabCompletion": "on",
+  "editor.formatOnSaveMode": "file",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.organizeImports": "always"
+  },
+  "eslint.validate": ["typescript"],
+  "window.commandCenter": true,
+  "eslint.format.enable": true,
+  "editor.formatOnSave": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "files.associations": {
+    "*.mdx": "markdown"
+  },
+  "emmet.includeLanguages": {
+    "markdown": "html",
+    "mdx": "html"
+  },
+  "auto-close-tag.activationOnLanguage": ["mdx", "astro", "markdown"],
+  "javascript.format.semicolons": "remove",
+  "typescript.format.semicolons": "remove",
+  "editor.tabSize": 2,
+  "editor.detectIndentation": true
 }

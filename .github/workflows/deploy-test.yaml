@@ -5,7 +5,7 @@ on:
     branches: ["master"]
 
 permissions:
-   pull-requests: write
+  pull-requests: write
 
 jobs:
   aws_cdk_test_deploy:
