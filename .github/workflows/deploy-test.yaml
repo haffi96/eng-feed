@@ -29,7 +29,13 @@ jobs:
           cache-dependency-path: ./package-lock.json
 
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: npm install
+
+      - name: Run format Check
+        run: npm run fmt:check
+
+      - name: Run lint Check
+        run: npm run lint:check
 
       - name: Install AWS CDK
         run: npm i -g aws-cdk
@@ -42,10 +48,10 @@ jobs:
           aws-region: "eu-west-2"
 
       - name: Synth Dev stack
-        run: cdk synth test-env/dev-feed-stack
+        run: npm run cdk synth test-env/dev-feed-stack
 
       - name: Deploy Dev stack
-        run: cdk deploy test-env/dev-feed-stack --require-approval never
+        run: npm run cdk deploy test-env/dev-feed-stack --require-approval never
 
   vercel_test_deploy:
     name: Vercel preview Deployment
