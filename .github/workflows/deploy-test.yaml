@@ -37,9 +37,6 @@ jobs:
       - name: Run lint Check
         run: npm run lint:check
 
-      - name: Install AWS CDK
-        run: npm i -g aws-cdk
-
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@master
         with:
